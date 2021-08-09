@@ -98,10 +98,9 @@ export const useGetOne = <T, U = Record<string, unknown>>(key: string, url: stri
   const axios = useAxios();
 
   const service = async () => {
-    const data: T = await axios.get(url, params);
-    console.log(data);
+    const data: API.ResponseBody<T> = await axios.get(url, params);
 
-    return data;
+    return data.data;
   };
 
   return useQuery(key, service);
