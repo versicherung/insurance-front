@@ -1,9 +1,20 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
+import { viteMockServe } from 'vite-plugin-mock';
 
 // https://vitejs.dev/config/
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  const viteEnv = loadEnv(mode, process.cwd());
+  const plugins = [reactRefresh()];
+
+  viteEnv.VITE_MOCK &&
+    plugins.push(
+      viteMockServe({
+        localEnabled: true,
+      }),
+    );
+
   return {
     resolve: {
       alias: [
@@ -17,7 +28,7 @@ export default defineConfig(() => {
         },
       ],
     },
-    plugins: [reactRefresh()],
+    plugins: plugins,
     optimizeDeps: {
       include: ['@ant-design/icons'],
     },
