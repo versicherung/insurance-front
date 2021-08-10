@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import ProLayout from '@ant-design/pro-layout';
 import type { MenuDataItem } from '@ant-design/pro-layout';
@@ -67,7 +67,9 @@ const LayoutPage: FC = () => {
         );
       }}
     >
-      <Outlet />
+      <Suspense fallback={() => <div>loading</div>}>
+        <Outlet />
+      </Suspense>
     </ProLayout>
   );
 };

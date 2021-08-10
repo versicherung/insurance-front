@@ -1,9 +1,10 @@
 import React from 'react';
 import { PartialRouteObject } from 'react-router';
 import LayoutPage from '@/layout';
-import Welcome from '@/pages/Welcome';
 import NotFound from '@/pages/404';
 import WarpRoute from './components/WarpRoute';
+
+const Welcome = React.lazy(() => import('@/pages/Welcome'));
 
 export const routeList: PartialRouteObject[] = [
   {

@@ -10,7 +10,13 @@ export type GlobalHeaderRightProps = {
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const initialState = { currentUser: { name: 'Derek', avatar: '' } };
+  const initialState = {
+    currentUser: {
+      name: 'Derek',
+      avatar:
+        'https://tse1-mm.cn.bing.net/th/id/R-C.425302bcdbbb97ff02e610d1768c3e84?rik=syZM0%2fHUF82Y%2fg&riu=http%3a%2f%2fwww.gx8899.com%2fuploads%2fallimg%2f2017110610%2feizbdetv5xo.jpg&ehk=WgrpdiIdqars6%2bUvMxLxW2tWhIhX8YnYHONyICx8ezw%3d&risl=&pid=ImgRaw&r=0',
+    },
+  };
 
   const onMenuClick = useCallback(() => {
     console.log('onMenuClick');
