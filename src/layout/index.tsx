@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import ProLayout from '@ant-design/pro-layout';
 import type { MenuDataItem } from '@ant-design/pro-layout';
 import { HeartOutlined } from '@ant-design/icons';
@@ -27,22 +27,20 @@ const loopMenuItem = (menus?: MenuDataItem[]): MenuDataItem[] => {
 };
 
 const LayoutPage: FC = () => {
-  const { data: menuList } = useGetMenu();
-
-  // useEffect(() => {
-  //   console.log(menuList);
-  // }, [menuList]);
+  const location = useLocation();
+  const { data: menuList, isLoading: menuLoading } = useGetMenu();
 
   return (
     <ProLayout
       style={{ height: '100vh' }}
       fixSiderbar
+      loading={menuLoading}
       title="车险出单 Pro"
       footerRender={() => <Footer />}
       rightContentRender={() => <RightContent />}
+      location={{ pathname: location.pathname }}
       menuDataRender={() => loopMenuItem(menuList)}
       menuItemRender={(menuItemProps, defaultDom) => {
-        console.log(menuItemProps, defaultDom);
         if (
           menuItemProps.isUrl ||
           !menuItemProps.path ||
@@ -52,6 +50,21 @@ const LayoutPage: FC = () => {
         }
 
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+      }}
+      breadcrumbRender={(routers = []) => [
+        {
+          path: '/',
+          breadcrumbName: '主页',
+        },
+        ...routers,
+      ]}
+      itemRender={(route, params, routes, paths) => {
+        const first = routes.indexOf(route) === 0;
+        return first ? (
+          <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+        ) : (
+          <span>{route.breadcrumbName}</span>
+        );
       }}
     >
       <Outlet />

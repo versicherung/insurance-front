@@ -8,9 +8,19 @@ const userMethod: MockMethod[] = [
     response: () => {
       return resultSuccess([
         {
-          path: '/welcome',
-          name: '欢迎',
+          path: '/',
+          name: 'welcome',
           icon: 'heart',
+          children: [
+            {
+              path: '/welcome',
+              name: 'one',
+            },
+          ],
+        },
+        {
+          path: '/demo',
+          name: 'demo',
         },
       ]);
     },
