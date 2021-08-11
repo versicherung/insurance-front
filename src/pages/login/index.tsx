@@ -2,21 +2,25 @@ import React, { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Location } from 'history';
 
-import styles from './index.module.less';
 import LogoSvg from '@/assets/logo.svg';
 
+import styles from './index.module.less';
 import './antd.reset.less';
 
+interface formParams {
+  username: string;
+  password: string;
+  remember: boolean;
+}
+
 const LoginForm: FC = () => {
-  // const loginMutation = useLogin();
   const navigate = useNavigate();
-  const location = useLocation() as Location<{ from: string }>;
+  const location = useLocation();
 
-  // const dispatch = useAppDispatch();
-
-  const onFinish = async form => {};
+  const onFinish = async (form: formParams) => {
+    console.log(form);
+  };
 
   return (
     <div className={styles.container}>
@@ -31,7 +35,7 @@ const LoginForm: FC = () => {
         <Form
           name="normal_login"
           className="login-form"
-          initialValues={{ remember: true }}
+          initialValues={{ remember: false }}
           onFinish={onFinish}
         >
           <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>

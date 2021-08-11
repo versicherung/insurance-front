@@ -1,4 +1,5 @@
-import { useGetOne } from './request';
+import { useQuery } from 'react-query';
+import { useAxios } from './request';
 
 interface MenuItem {
   /** menu item name */
@@ -16,5 +17,13 @@ interface MenuItem {
 type MenuList = MenuItem[];
 
 export const useGetMenu = () => {
-  return useGetOne<MenuList>('MENU', 'user/menu');
+  const axios = useAxios();
+
+  const service = async () => {
+    const data: API.ResponseBody<MenuList> = await axios.get('/user/menu');
+
+    return data.data;
+  };
+
+  return useQuery<MenuList, Error>('user', service);
 };

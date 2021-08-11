@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useMemo, FC } from 'react';
 import Axios, { AxiosInstance } from 'axios';
 import { createHashHistory } from 'history';
-import { useQuery } from 'react-query';
 import { notification } from 'antd';
 
 const history = createHashHistory();
@@ -15,21 +14,17 @@ const axios = Axios.create({
 
 axios.interceptors.response.use(
   response => {
-    const data = response.data;
-    if (response.status === 200) {
-      return data;
+    const data = response.data as API.ResponseBody;
+    if (data.code === 0) {
+      return data as any;
     }
 
     notification.error({
-      message: `请求错误 ${response.statusText}: ${response}`,
-      description: data || response.statusText || 'Error',
+      message: `请求错误 ${data.code}: ${data.msg}`,
+      description: data.msg || 'Error',
     });
 
-    if (response.status === 401) {
-      history.push('/auth/login');
-    }
-
-    return Promise.reject(new Error(response.statusText || 'Error'));
+    return Promise.reject(new Error(data.msg || 'Error'));
   },
   error => {
     if (error.response && error.response.status) {
@@ -92,16 +87,4 @@ export const AxiosProvide: FC = ({ children }) => {
   const axiosValue = useMemo(() => axios, []);
 
   return <AxiosContext.Provider value={axiosValue}>{children}</AxiosContext.Provider>;
-};
-
-export const useGetOne = <T, U = Record<string, unknown>>(key: string, url: string, params?: U) => {
-  const axios = useAxios();
-
-  const service = async () => {
-    const data: API.ResponseBody<T> = await axios.get(url, params);
-
-    return data.data;
-  };
-
-  return useQuery(key, service);
 };
