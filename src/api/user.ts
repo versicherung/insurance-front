@@ -25,5 +25,5 @@ export const useGetMenu = () => {
     return data.data;
   };
 
-  return useQuery<MenuList, Error>('user', service);
+  return useQuery<MenuList, Error>('user/menu', service);
 };
