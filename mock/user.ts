@@ -3,7 +3,18 @@ import { resultSuccess } from './utils';
 
 const userMethod: MockMethod[] = [
   {
-    url: '/api/user/menu',
+    url: '/api/v1/login',
+    method: 'post',
+    response: () => {
+      return resultSuccess({
+        token: '',
+        uid: '',
+        authority: 0,
+      });
+    },
+  },
+  {
+    url: '/api/v1/menu',
     method: 'get',
     response: () => {
       return resultSuccess([

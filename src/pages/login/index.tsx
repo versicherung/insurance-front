@@ -1,25 +1,18 @@
 import React, { FC } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-
+import { useLogin } from '@/api/user';
+import { FormParams } from '@/models/user';
 import LogoSvg from '@/assets/logo.svg';
 
 import styles from './index.module.less';
 import './antd.reset.less';
 
-interface formParams {
-  username: string;
-  password: string;
-  remember: boolean;
-}
-
 const LoginForm: FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const loginMutation = useLogin();
 
-  const onFinish = async (form: formParams) => {
-    console.log(form);
+  const onFinish = async (form: FormParams) => {
+    loginMutation.mutate(form);
   };
 
   return (
@@ -29,7 +22,7 @@ const LoginForm: FC = () => {
           <img src={LogoSvg} className={styles.logo} />
           <span className={styles.title}>车险出单系统</span>
         </div>
-        <div className={styles.desc}>使用(React\Recoil\React Query\React Hooks\Vite)构建</div>
+        <div className={styles.desc}>使用（React\Recoil\React Query\React Hooks\Vite）构建</div>
       </div>
       <div className={styles.main} id="components-form-demo-normal-login">
         <Form
@@ -59,7 +52,13 @@ const LoginForm: FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+              loading={loginMutation.isLoading}
+              disabled={loginMutation.isLoading}
+            >
               登录
             </Button>
           </Form.Item>
