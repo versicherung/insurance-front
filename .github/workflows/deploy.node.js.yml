@@ -6,8 +6,6 @@ name: Node.js Deploy CI
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   deploy:
