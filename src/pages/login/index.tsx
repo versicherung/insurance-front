@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useLogin } from '@/api/user';
 import { FormParams } from '@/models/user';
@@ -41,7 +41,7 @@ const LoginForm: FC = () => {
               placeholder="密码"
             />
           </Form.Item>
-          <Form.Item>
+          {/* <Form.Item>
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
@@ -49,7 +49,7 @@ const LoginForm: FC = () => {
             <a className="login-form-forgot" href="">
               忘记密码
             </a>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item>
             <Button
