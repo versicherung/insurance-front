@@ -8,7 +8,7 @@ const history = createHashHistory();
 const baseUrl = import.meta.env.VITE_BASE_URL as string;
 
 const axios = Axios.create({
-  baseURL: baseUrl ? baseUrl : '/api/v1',
+  baseURL: baseUrl ? baseUrl : '/api',
   timeout: 3000,
 });
 

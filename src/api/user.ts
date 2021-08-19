@@ -1,6 +1,7 @@
 import { Location } from 'history';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
+import md5 from 'md5';
 import { MenuList, FormParams, LoginResponse } from '@/models/user';
 import { setToken } from '@/utils/storage';
 import { useAxios } from './request';
@@ -13,7 +14,7 @@ export const useLogin = () => {
   const service = async ({ username, password }: FormParams) => {
     const data: API.ResponseBody<LoginResponse> = await axios.post('/login', {
       username,
-      password,
+      password: md5(password),
     });
 
     return data.data;

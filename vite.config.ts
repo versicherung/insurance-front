@@ -42,6 +42,14 @@ export default defineConfig(({ mode }) => {
         },
       ],
     },
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://insurance.wghtstudio.cn',
+          changeOrigin: true,
+        },
+      },
+    },
     plugins: plugins,
     optimizeDeps: {
       include: ['@ant-design/icons'],
