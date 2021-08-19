@@ -1,8 +1,7 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Alert, Typography } from 'antd';
-
-import styles from './Welcome.module.less';
+import styles from './Welcome.less';
 
 const CodePreview: React.FC = ({ children }) => (
   <pre className={styles.pre}>
@@ -12,12 +11,12 @@ const CodePreview: React.FC = ({ children }) => (
   </pre>
 );
 
-const Welcome: FC = () => {
+export default (): React.ReactNode => {
   return (
     <PageContainer>
       <Card>
         <Alert
-          message="Faster and stronger heavy-duty components have been released."
+          message={'更快更强的重型组件，已经发布。'}
           type="success"
           showIcon
           banner
@@ -27,13 +26,13 @@ const Welcome: FC = () => {
           }}
         />
         <Typography.Text strong>
-          {'Advanced Form '}
+          高级表格{' '}
           <a
             href="https://procomponents.ant.design/components/table"
             rel="noopener noreferrer"
             target="__blank"
           >
-            Welcome
+            欢迎使用
           </a>
         </Typography.Text>
         <CodePreview>yarn add @ant-design/pro-table</CodePreview>
@@ -43,13 +42,13 @@ const Welcome: FC = () => {
             marginBottom: 12,
           }}
         >
-          {'Advanced layout '}
+          高级布局{' '}
           <a
             href="https://procomponents.ant.design/components/layout"
             rel="noopener noreferrer"
             target="__blank"
           >
-            Welcome
+            欢迎使用
           </a>
         </Typography.Text>
         <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
@@ -57,5 +56,3 @@ const Welcome: FC = () => {
     </PageContainer>
   );
 };
-
-export default Welcome;
