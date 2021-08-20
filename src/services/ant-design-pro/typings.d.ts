@@ -23,10 +23,17 @@ declare namespace API {
     phone?: string;
   };
 
+  type LoginResultData = {
+    id: number;
+    role: number;
+    token: string;
+    username: string;
+  };
+
   type LoginResult = {
-    code: number;
-    data: any;
-    msg: string;
+    code?: number;
+    data?: LoginResultData;
+    msg?: string;
   };
 
   type PageParams = {

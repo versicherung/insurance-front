@@ -5,7 +5,7 @@ import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { getCurrentUser } from './utils/storage';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -20,29 +20,32 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  currentUser?: API.LoginResultData;
+  getUserInfo?: () => API.LoginResultData | undefined;
 }> {
-  const fetchUserInfo = async () => {
-    try {
-      const msg = await queryCurrentUser();
-      return msg.data;
-    } catch (error) {
+  const getUserInfo = () => {
+    const res = getCurrentUser();
+    if (!res) {
       history.push(loginPath);
+      return undefined;
     }
-    return undefined;
+
+    return res;
   };
+
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
+    const currentUser = getUserInfo();
+
     return {
-      fetchUserInfo,
+      getUserInfo,
       currentUser,
       settings: {},
     };
   }
+
   return {
-    fetchUserInfo,
+    getUserInfo,
     settings: {},
   };
 }
@@ -53,7 +56,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.username,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {

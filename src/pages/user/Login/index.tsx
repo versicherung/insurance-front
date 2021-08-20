@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
-import { Alert, message } from 'antd';
+import { message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import md5 from 'md5';
 import Footer from '@/components/Footer';
 import { login } from '@/services/ant-design-pro/api';
+import { setCurrentUser as setCurrentUserStoreage } from '@/utils/storage';
 
 import styles from './index.less';
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => (
-  <Alert
-    style={{
-      marginBottom: 24,
-    }}
-    message={content}
-    type="error"
-    showIcon
-  />
-);
+// const LoginMessage: React.FC<{
+//   content: string;
+// }> = ({ content }) => (
+//   <Alert
+//     style={{
+//       marginBottom: 24,
+//     }}
+//     message={content}
+//     type="error"
+//     showIcon
+//   />
+// );
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
+  const setCurrentUser = async () => {
+    const userInfo = initialState?.getUserInfo?.();
 
     if (userInfo) {
       await setInitialState((s) => ({ ...s, currentUser: userInfo }));
@@ -43,9 +43,10 @@ const Login: React.FC = () => {
       const msg = await login({ ...values, password: md5(values.password as string) });
 
       if (msg.code === 0) {
+        setCurrentUserStoreage(msg.data as API.LoginResultData);
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+        await setCurrentUser();
         /** 此方法会跳转到 redirect 参数所在的位置 */
 
         if (!history) return;
@@ -55,9 +56,7 @@ const Login: React.FC = () => {
         };
         history.push(redirect || '/');
         return;
-      } // 如果失败去设置用户错误信息
-
-      setUserLoginState(msg);
+      }
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       message.error(defaultLoginFailureMessage);
@@ -66,7 +65,6 @@ const Login: React.FC = () => {
     setSubmitting(false);
   };
 
-  const { status, type: loginType } = userLoginState;
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -99,9 +97,6 @@ const Login: React.FC = () => {
               await handleSubmit(values as API.LoginParams);
             }}
           >
-            {status === 'error' && loginType === 'account' && (
-              <LoginMessage content={'错误的用户名和密码'} />
-            )}
             <ProFormText
               name="username"
               fieldProps={{
