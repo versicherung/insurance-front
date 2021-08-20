@@ -41,6 +41,28 @@ declare namespace API {
     pageSize?: number;
   };
 
+  type OrderListItem = {
+    key?: number;
+    disabled?: boolean;
+    href?: string;
+    avatar?: string;
+    name?: string;
+    owner?: string;
+    desc?: string;
+    callNo?: number;
+    status?: number;
+    updatedAt?: string;
+    createdAt?: string;
+    progress?: number;
+  };
+
+  type OrderList = {
+    data?: { total: number; items: OrderListItem[] };
+    /** 列表的内容总数 */
+    msg?: string;
+    code?: number;
+  };
+
   type RuleListItem = {
     key?: number;
     disabled?: boolean;
