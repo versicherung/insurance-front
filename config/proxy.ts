@@ -9,7 +9,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'https://preview.pro.ant.design',
+      target: 'http://insurance.wghtstudio.cn',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

@@ -3,6 +3,7 @@ import { Alert, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
+import md5 from 'md5';
 import Footer from '@/components/Footer';
 import { login } from '@/services/ant-design-pro/api';
 
@@ -39,9 +40,9 @@ const Login: React.FC = () => {
 
     try {
       // 登录
-      const msg = await login({ ...values });
+      const msg = await login({ ...values, password: md5(values.password as string) });
 
-      if (msg.status === 'ok') {
+      if (msg.code === 0) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
