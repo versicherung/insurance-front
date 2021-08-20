@@ -8,6 +8,7 @@ import {
   ProFormRadio,
   ProFormDateTimePicker,
 } from '@ant-design/pro-form';
+
 export type FormValueType = {
   target?: string;
   template?: string;
@@ -15,6 +16,7 @@ export type FormValueType = {
   time?: string;
   frequency?: string;
 } & Partial<API.RuleListItem>;
+
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
   onSubmit: (values: FormValueType) => Promise<void>;
