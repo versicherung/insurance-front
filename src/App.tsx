@@ -1,11 +1,11 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
+import { PageLoading } from '@ant-design/pro-layout';
+import { BookOutlined, LinkOutlined } from '@ant-design/icons';
+import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
-import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -80,4 +80,27 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // unAccessible: <div>unAccessible</div>,
     ...initialState?.settings,
   };
+};
+
+export const request: RequestConfig = {
+  errorConfig: {
+    adaptor: (resData) => {
+      const res = {
+        success: true,
+        errorCode: '1001',
+        errorMessage: 'error message',
+      };
+
+      if (resData.code !== 0) {
+        res.success = false;
+        res.errorCode = String(resData.code);
+        res.errorMessage = resData.msg;
+      }
+
+      return {
+        ...res,
+        data: resData.data,
+      };
+    },
+  },
 };
