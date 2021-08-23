@@ -60,7 +60,7 @@ export async function rule(
   });
 }
 
-/** 获取规则列表 GET /api/rule */
+/** 获取订单列表 GET /api/insurance */
 export async function order(
   params: {
     // query

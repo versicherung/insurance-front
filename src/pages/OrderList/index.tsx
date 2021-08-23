@@ -199,24 +199,24 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [
-        // <a
-        //   key="config"
-        //   onClick={() => {
-        //     handleUpdateModalVisible(true);
-        //     setCurrentRow(record);
-        //   }}
-        // >
-        //   配置
-        // </a>,
-        <a key="subscribeAlert">下载附件</a>,
+      render: (_, record) => [
+        <a key="downloadFile">下载附件</a>,
+        <a
+          key="downloadInsurance"
+          style={{
+            pointerEvents: record.policy ? 'auto' : 'none',
+            opacity: record.policy ? 1 : 0.2,
+          }}
+        >
+          下载保单
+        </a>,
       ],
     },
   ];
 
   return (
     <PageContainer>
-      <ProTable<API.RuleListItem, API.PageParams>
+      <ProTable<API.OrderListItem, API.PageParams>
         headerTitle={'顶单列表'}
         actionRef={actionRef}
         rowKey="id"
