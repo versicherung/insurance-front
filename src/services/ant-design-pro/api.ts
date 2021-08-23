@@ -82,9 +82,13 @@ export async function order(
 }
 
 // 导出 Excel 表格 GET /api/insurance/export
-export async function exportExcel() {
+export async function exportExcel(params: { startTime?: string; endTime?: string; id?: number[] }) {
   return umiRequest('/api/insurance/export', {
     responseType: 'blob',
+    method: 'GET',
+    params: {
+      ...params,
+    },
   });
 }
 
