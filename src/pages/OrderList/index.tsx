@@ -5,10 +5,11 @@ import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { PlusOutlined } from '@ant-design/icons';
+import type { ProFormInstance } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 
-import { order, addRule, updateRule, removeRule, exportExcel } from '@/services/ant-design-pro/api';
+import { order, addRule, updateRule, exportExcel } from '@/services/ant-design-pro/api';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 /**
@@ -63,38 +64,60 @@ const handleUpdate = async (fields: FormValueType) => {
  * @param selectedRows
  */
 
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+// const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+//   const hide = message.loading('正在删除');
+//   if (!selectedRows) return true;
+
+//   try {
+//     await removeRule({
+//       key: selectedRows.map((row) => row.key),
+//     });
+//     hide();
+//     message.success('Deleted successfully and will refresh soon');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Delete failed, please try again');
+//     return false;
+//   }
+// };
+
+const handleExportExcel = async (
+  formRef: React.MutableRefObject<ProFormInstance | undefined>,
+  id?: number[],
+) => {
+  const params: { startTime?: string; endTime?: string; id?: number[] } = {};
+  const hide = message.loading('正在导出');
+
+  // 为导出接口添加参数
+  if (formRef.current) {
+    const fields = formRef.current.getFieldsValue();
+    if (fields.startTime) {
+      params.startTime = fields.startTime[0].format('YYYY-MM-DD');
+      params.endTime = fields.startTime[1].format('YYYY-MM-DD');
+    }
+  }
+  if (id) {
+    params.id = [...id];
+  }
 
   try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
+    const res = await exportExcel(params);
     hide();
-    message.success('Deleted successfully and will refresh soon');
-    return true;
-  } catch (error) {
+
+    const url = window.URL.createObjectURL(res);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'export.xlsx');
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
     hide();
-    message.error('Delete failed, please try again');
-    return false;
+    message.error('导出文件失败，请稍后重试');
   }
-};
-
-const handleExportExcel = async () => {
-  const hide = message.loading('正在导出');
-  const res = await exportExcel();
-  hide();
-
-  const url = window.URL.createObjectURL(res);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'export.xlsx');
-  link.style.display = 'none';
-
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
 };
 
 const TableList: React.FC = () => {
@@ -105,8 +128,9 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<ProFormInstance>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<API.OrderListItem[]>([]);
 
   const columns: ProColumns<API.OrderListItem>[] = [
     {
@@ -185,6 +209,7 @@ const TableList: React.FC = () => {
       <ProTable<API.OrderListItem, API.PageParams>
         headerTitle={'顶单列表'}
         actionRef={actionRef}
+        formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 120,
@@ -199,7 +224,7 @@ const TableList: React.FC = () => {
           >
             <PlusOutlined /> 新建
           </Button>,
-          <Button key="out" onClick={handleExportExcel}>
+          <Button key="out" onClick={() => handleExportExcel(formRef)}>
             导出全部
           </Button>,
         ]}
@@ -223,22 +248,19 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              已选择{' '}
+              已选择&nbsp;
               <a
                 style={{
                   fontWeight: 600,
                 }}
               >
                 {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)} 万
-              </span>
+              </a>
+              &nbsp;项
             </div>
           }
         >
-          <Button
+          {/* <Button
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -246,8 +268,19 @@ const TableList: React.FC = () => {
             }}
           >
             批量删除
+          </Button> */}
+          <Button
+            type="primary"
+            onClick={async () => {
+              await handleExportExcel(
+                formRef,
+                selectedRowsState.map((item) => item.id),
+              );
+              setSelectedRows([]);
+            }}
+          >
+            批量导出
           </Button>
-          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
       <ModalForm
