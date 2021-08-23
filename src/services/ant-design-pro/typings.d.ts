@@ -42,18 +42,13 @@ declare namespace API {
   };
 
   type OrderListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    avatar?: string;
-    name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
-    status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
+    carType: string;
+    id: number;
+    licensePlate: string;
+    owner: string;
+    payType: string;
+    policy?: string;
+    startTime: string;
   };
 
   type OrderList = {
