@@ -4,11 +4,11 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { PlusOutlined, DownOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 
-import { order, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
+import { order, addRule, updateRule, removeRule, exportExcel } from '@/services/ant-design-pro/api';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 /**
@@ -81,26 +81,32 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
+const handleExportExcel = async () => {
+  const hide = message.loading('正在导出');
+  const res = await exportExcel();
+  hide();
 
+  const url = window.URL.createObjectURL(res);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'export.xlsx');
+  link.style.display = 'none';
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const TableList: React.FC = () => {
+  // 新建窗口的弹窗
+  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+
+  // 分步更新窗口的弹窗
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
 
   const columns: ProColumns<API.OrderListItem>[] = [
     {
@@ -130,9 +136,6 @@ const TableList: React.FC = () => {
       dataIndex: 'startTime',
       valueType: 'date',
       hideInSearch: true,
-      // sorter: true,
-      // hideInForm: true,
-      // renderText: (val: string) => `${val}${'万'}`,
     },
     {
       title: '创建时间',
@@ -147,53 +150,16 @@ const TableList: React.FC = () => {
           };
         },
       },
-      // sorter: true,
-      // hideInForm: true,
-      // renderText: (val: string) => `${val}${'万'}`,
     },
     {
       title: '车型',
       dataIndex: 'carType',
       search: false,
-      // hideInForm: true,
-      // valueEnum: {
-      //   0: {
-      //     text: '关闭',
-      //     status: 'Default',
-      //   },
-      //   1: {
-      //     text: '运行中',
-      //     status: 'Processing',
-      //   },
-      //   2: {
-      //     text: '已上线',
-      //     status: 'Success',
-      //   },
-      //   3: {
-      //     text: '异常',
-      //     status: 'Error',
-      //   },
-      // },
     },
     {
       title: '付费方式',
-      // sorter: true,
       dataIndex: 'payType',
       search: false,
-      // valueType: 'dateTime',
-      // renderFormItem: (item, { defaultRender, ...rest }, form) => {
-      //   const status = form.getFieldValue('status');
-
-      //   if (`${status}` === '0') {
-      //     return false;
-      //   }
-
-      //   if (`${status}` === '3') {
-      //     return <Input {...rest} placeholder={'请输入异常原因！'} />;
-      //   }
-
-      //   return defaultRender(item);
-      // },
     },
     {
       title: '操作',
@@ -220,9 +186,9 @@ const TableList: React.FC = () => {
         headerTitle={'顶单列表'}
         actionRef={actionRef}
         rowKey="id"
-        // search={{
-        //   labelWidth: 120,
-        // }}
+        search={{
+          labelWidth: 120,
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -233,9 +199,8 @@ const TableList: React.FC = () => {
           >
             <PlusOutlined /> 新建
           </Button>,
-          <Button key="out">
-            导出数据
-            <DownOutlined />
+          <Button key="out" onClick={handleExportExcel}>
+            导出全部
           </Button>,
         ]}
         request={async (params) => {

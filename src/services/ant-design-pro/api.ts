@@ -1,6 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from 'umi';
+import umiRequest from 'umi-request';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
@@ -77,6 +78,13 @@ export async function order(
       ...params,
     },
     ...(options || {}),
+  });
+}
+
+// 导出 Excel 表格 GET /api/insurance/export
+export async function exportExcel() {
+  return umiRequest('/api/insurance/export', {
+    responseType: 'blob',
   });
 }
 
