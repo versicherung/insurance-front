@@ -13,7 +13,7 @@ const CreateOrder: React.FC = () => {
     <PageContainer content="创建一个保险单">
       <Card bordered={false}>
         {isFinish === false ? (
-          <Steps current={current} setCurrent={setCurrent} />
+          <Steps current={current} setCurrent={setCurrent} setIsFinish={setIsFinish} />
         ) : (
           <StepResult
             onFinish={() => {

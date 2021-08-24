@@ -72,4 +72,34 @@ declare namespace API {
     engine: string;
     frame: string;
   }>;
+
+  type CreateOrderParams = {
+    startTime: string;
+    paymentId: number;
+    carTypeId: number;
+    idCard?: {
+      id: number;
+      name: string;
+      number: string;
+      address: string;
+    };
+    businessLicense?: {
+      id: number;
+      name: string;
+      number: string;
+      address: string;
+    };
+    drivingLicense?: {
+      id: number;
+      plate: number;
+      engine: string;
+      frame: string;
+      type: string;
+    };
+    certificate?: {
+      id: number;
+      engine: string;
+      frame: string;
+    };
+  };
 }

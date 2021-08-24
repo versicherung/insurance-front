@@ -1,15 +1,25 @@
 import React, { useState, useRef } from 'react';
+import { message } from 'antd';
 import { StepsForm, ProFormSelect, ProFormDatePicker, ProFormText } from '@ant-design/pro-form';
 import moment from 'moment';
 
 import type { FormInstance } from 'antd';
 import { businessOcr, certificateOcr, drivingOcr, idCardOcr } from '@/services/ocr';
+import { createOrder } from '@/services/api';
 import UploadAliyunOSS from './UploadAliyunOSS';
 
 const Steps: React.FC<{
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
-}> = ({ current, setCurrent }) => {
+  setIsFinish: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ current, setCurrent, setIsFinish }) => {
+  const [fileIds, setFileIds] = useState({
+    idCardId: 0,
+    businessId: 0,
+    drivingId: 0,
+    certificateId: 0,
+  });
+
   const [isIdCard, setIsIdCard] = useState(true);
   const secondRef = useRef<FormInstance>();
   const idCardRef = useRef<any>();
@@ -22,15 +32,61 @@ const Steps: React.FC<{
   const certificateRef = useRef<any>();
   const [isThirdAfterOcr, setIsThirdAfterOcr] = useState(false);
 
+  const onFinish = async (value: any) => {
+    const data: API.CreateOrderParams = {
+      startTime: value.startTime,
+      carTypeId: value.carType,
+      paymentId: value.payment,
+    };
+
+    if (value.idOrBusiness === 'idCard') {
+      data.idCard = {
+        id: fileIds.idCardId,
+        name: value.name,
+        number: value.number,
+        address: value.address,
+      };
+    } else {
+      data.businessLicense = {
+        id: fileIds.businessId,
+        name: value.name,
+        number: value.number,
+        address: value.address,
+      };
+    }
+
+    if (value.drivingOrCertificate === 'driving') {
+      data.drivingLicense = {
+        id: fileIds.drivingId,
+        plate: value.plate,
+        frame: value.frame,
+        engine: value.engine,
+        type: value.vehicleType,
+      };
+    } else {
+      data.certificate = {
+        id: fileIds.certificateId,
+        frame: value.frame,
+        engine: value.engine,
+      };
+    }
+
+    const hide = message.loading('正在创建订单');
+    try {
+      createOrder(data);
+      hide();
+      message.info('订单创建成功');
+      setIsFinish(true);
+      return true;
+    } catch (e) {
+      hide();
+      message.error('订单创建失败');
+      return false;
+    }
+  };
+
   return (
-    <StepsForm
-      current={current}
-      onCurrentChange={setCurrent}
-      onFinish={async (value) => {
-        console.log(value);
-        return true;
-      }}
-    >
+    <StepsForm current={current} onCurrentChange={setCurrent} onFinish={onFinish}>
       <StepsForm.StepForm
         title="选择车辆类型，设置基本信息"
         initialValues={{
@@ -127,6 +183,10 @@ const Steps: React.FC<{
                   address: data?.address,
                 });
                 setIsSecondAfterOcr(true);
+                setFileIds((s) => ({
+                  ...s,
+                  idCardId: data?.id as number,
+                }));
 
                 return res;
               }}
@@ -170,6 +230,10 @@ const Steps: React.FC<{
                   address: data?.address,
                 });
                 setIsSecondAfterOcr(true);
+                setFileIds((s) => ({
+                  ...s,
+                  businessId: data?.id as number,
+                }));
 
                 return res;
               }}
@@ -258,6 +322,10 @@ const Steps: React.FC<{
                   frame: data?.frame,
                 });
                 setIsThirdAfterOcr(true);
+                setFileIds((s) => ({
+                  ...s,
+                  drivingId: data?.id as number,
+                }));
 
                 return res;
               }}
@@ -308,6 +376,10 @@ const Steps: React.FC<{
                   frame: data?.frame,
                 });
                 setIsThirdAfterOcr(true);
+                setFileIds((s) => ({
+                  ...s,
+                  certificateId: data?.id as number,
+                }));
 
                 return res;
               }}

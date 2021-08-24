@@ -53,3 +53,11 @@ export async function exportExcel(params: { startTime?: string; endTime?: string
     },
   });
 }
+
+// 导出 Excel 表格 GET /api/insurance/export
+export async function createOrder(params: API.CreateOrderParams) {
+  return request('/api/insurance', {
+    method: 'POST',
+    data: params,
+  });
+}
