@@ -5,7 +5,7 @@ import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { Link, history, useModel } from 'umi';
 import md5 from 'md5';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
+import { login } from '@/services/api';
 import { setCurrentUser as setCurrentUserStoreage } from '@/utils/storage';
 
 import styles from './index.less';

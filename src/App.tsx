@@ -2,7 +2,7 @@ import { history, Link } from 'umi';
 import { PageLoading } from '@ant-design/pro-layout';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
-import type { RequestInterceptor } from 'umi-request';
+import type { RequestInterceptor, ResponseInterceptor } from 'umi-request';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
@@ -96,6 +96,15 @@ const AuthHeaderInterceptor: RequestInterceptor = (url, options) => {
   };
 };
 
+const TokenExpireInterceptor: ResponseInterceptor = (res) => {
+  if (res.status === 401 || res.status === 403) {
+    history.push('/user/login');
+    return res;
+  }
+
+  return res;
+};
+
 export const request: RequestConfig = {
   errorConfig: {
     adaptor: (resData) => {
@@ -118,4 +127,5 @@ export const request: RequestConfig = {
     },
   },
   requestInterceptors: [AuthHeaderInterceptor],
+  responseInterceptors: [TokenExpireInterceptor],
 };
