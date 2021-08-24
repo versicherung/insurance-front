@@ -20,7 +20,16 @@ export default [
   //   ],
   // },
   // { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
-  { name: '订单列表', icon: 'table', path: '/order', component: './OrderList' },
-  { path: '/', redirect: '/order' },
+  {
+    name: '订单',
+    icon: 'table',
+    path: '/order',
+    routes: [
+      { name: '订单列表', path: '/order/list', component: './OrderList' },
+      { name: '创建订单', path: '/order/create', component: './CreateOrder' },
+      { component: './404' },
+    ],
+  },
+  { path: '/', redirect: '/order/list' },
   { component: './404' },
 ];

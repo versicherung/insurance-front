@@ -1,37 +1,37 @@
 import React, { useState, useRef } from 'react';
-import { Button, message, Drawer } from 'antd';
+import { Button, message } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import ProDescriptions from '@ant-design/pro-descriptions';
+// import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+// import ProDescriptions from '@ant-design/pro-descriptions';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+// import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 
-import { order, addRule, updateRule, exportExcel } from '@/services/ant-design-pro/api';
-import type { FormValueType } from './components/UpdateForm';
-import UpdateForm from './components/UpdateForm';
+import { order, exportExcel } from '@/services/api';
+// import type { FormValueType } from './components/UpdateForm';
+// import UpdateForm from './components/UpdateForm';
 /**
  * @en-US Add node
  * @zh-CN 添加节点
  * @param fields
  */
 
-const handleAdd = async (fields: API.RuleListItem) => {
-  const hide = message.loading('正在添加');
+// const handleAdd = async (fields: API.RuleListItem) => {
+//   const hide = message.loading('正在添加');
 
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('Added successfully');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Adding failed, please try again!');
-    return false;
-  }
-};
+//   try {
+//     await addRule({ ...fields });
+//     hide();
+//     message.success('Added successfully');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Adding failed, please try again!');
+//     return false;
+//   }
+// };
 /**
  * @en-US Update node
  * @zh-CN 更新节点
@@ -39,24 +39,24 @@ const handleAdd = async (fields: API.RuleListItem) => {
  * @param fields
  */
 
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
+// const handleUpdate = async (fields: FormValueType) => {
+//   const hide = message.loading('Configuring');
 
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('Configuration is successful');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Configuration failed, please try again!');
-    return false;
-  }
-};
+//   try {
+//     await updateRule({
+//       name: fields.name,
+//       desc: fields.desc,
+//       key: fields.key,
+//     });
+//     hide();
+//     message.success('Configuration is successful');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Configuration failed, please try again!');
+//     return false;
+//   }
+// };
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -122,14 +122,14 @@ const handleExportExcel = async (
 
 const TableList: React.FC = () => {
   // 新建窗口的弹窗
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  // const [createModalVisible, handleModalVisible] = useState<boolean>(false);
 
   // 分步更新窗口的弹窗
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
+  // const [updateModalVisible, handleUpdateModalVisible]; = useState<boolean>(false);
+  // const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const formRef = useRef<ProFormInstance>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
+  // const [currentRow, setCurrentRow] = useState<API.OrderListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.OrderListItem[]>([]);
 
   const columns: ProColumns<API.OrderListItem>[] = [
@@ -137,12 +137,12 @@ const TableList: React.FC = () => {
       title: '车主',
       dataIndex: 'owner',
       hideInSearch: true,
-      render: (dom, entity) => {
+      render: (dom) => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
+              // setCurrentRow(entity);
+              // setShowDetail(true);
             }}
           >
             {dom}
@@ -219,7 +219,7 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              handleModalVisible(true);
+              // handleModalVisible(true);
             }}
           >
             <PlusOutlined /> 新建
@@ -283,7 +283,7 @@ const TableList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
+      {/* <ModalForm
         title={'新建规则'}
         width="400px"
         visible={createModalVisible}
@@ -336,7 +336,7 @@ const TableList: React.FC = () => {
         values={currentRow || {}}
       />
 
-      <Drawer
+      <Drawer 
         width={600}
         visible={showDetail}
         onClose={() => {
@@ -358,7 +358,7 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-      </Drawer>
+      </Drawer> */}
     </PageContainer>
   );
 };
