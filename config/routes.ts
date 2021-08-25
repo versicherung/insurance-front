@@ -7,6 +7,7 @@ export default [
       { component: './404' },
     ],
   },
+
   // { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
   // {
   //   path: '/admin',
@@ -29,6 +30,12 @@ export default [
       { name: '创建订单', path: '/order/create', component: './CreateOrder' },
       { component: './404' },
     ],
+  },
+  {
+    name: '用户管理',
+    icon: 'user',
+    path: '/userManage',
+    component: './user/List',
   },
   { path: '/', redirect: '/order/list' },
   { component: './404' },
