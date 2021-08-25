@@ -4,6 +4,7 @@ import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import type { RequestInterceptor, ResponseInterceptor } from 'umi-request';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { stringify } from 'querystring';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { getCurrentUser } from './utils/storage';
@@ -98,8 +99,17 @@ const AuthHeaderInterceptor: RequestInterceptor = (url, options) => {
 
 const TokenExpireInterceptor: ResponseInterceptor = (res) => {
   if (res.status === 401 || res.status === 403) {
-    history.push('/user/login');
-    return res;
+    const { query = {}, pathname } = history.location;
+    const { redirect } = query;
+    // Note: There may be security issues, please note
+    if (window.location.pathname !== '/user/login' && !redirect) {
+      history.replace({
+        pathname: '/user/login',
+        search: stringify({
+          redirect: pathname,
+        }),
+      });
+    }
   }
 
   return res;

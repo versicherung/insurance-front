@@ -29,3 +29,8 @@ export function getCurrentUser() {
   }
   return getStoreage<API.LoginResultData>(userKey);
 }
+
+export function clearCurrentUser() {
+  sessionStorage.removeItem(userKey);
+  sessionStorage.removeItem(timeKey);
+}

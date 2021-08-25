@@ -93,3 +93,11 @@ export async function updateUser(params: API.UpdateUserParams) {
     data: params,
   });
 }
+
+// 修改用户密码 POST /api/user/changePasswd
+export async function updateOwnPassword(params: API.UpdateOwnPasswordParams) {
+  return request('/api/user/changePasswd', {
+    method: 'POST',
+    data: params,
+  });
+}

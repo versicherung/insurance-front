@@ -135,4 +135,8 @@ declare namespace API {
     password?: string;
     roleId: number;
   };
+
+  type UpdateOwnPasswordParams = {
+    newPassword: string;
+  };
 }
