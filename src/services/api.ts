@@ -54,10 +54,42 @@ export async function exportExcel(params: { startTime?: string; endTime?: string
   });
 }
 
-// 导出 Excel 表格 GET /api/insurance/export
+// 创建订单 POST /api/insurance
 export async function createOrder(params: API.CreateOrderParams) {
   return request('/api/insurance', {
     method: 'POST',
+    data: params,
+  });
+}
+
+// 获取用户列表 GET /api/user
+export async function userList(params: API.UserListParams) {
+  return request('/api/user', {
+    method: 'GET',
+    params: params,
+  });
+}
+
+// 创建用户 POST /api/user
+export async function addUser(params: API.AddUserParams) {
+  return request('/api/user', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+// 删除用户 DELETE /api/user
+export async function deleteUser(params: API.DeleteUserParams) {
+  return request('/api/user', {
+    method: 'DELETE',
+    data: params,
+  });
+}
+
+// 修改用户 PUT /api/user
+export async function updateUser(params: API.UpdateUserParams) {
+  return request('/api/user', {
+    method: 'PUT',
     data: params,
   });
 }

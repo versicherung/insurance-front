@@ -102,4 +102,37 @@ declare namespace API {
       frame: string;
     };
   };
+
+  type UserListParams = {
+    current?: number;
+    pageSize?: number;
+    username?: string;
+  };
+
+  type UserListItem = {
+    id: number;
+    username: string;
+    role: number;
+  };
+
+  type UserListResult = Result<{
+    total: number;
+    items: UserListItem[];
+  }>;
+
+  type AddUserParams = {
+    username: string;
+    password: string;
+    roleId: number;
+  };
+
+  type DeleteUserParams = {
+    id: number;
+  };
+
+  type UpdateUserParams = {
+    id: number;
+    password?: string;
+    roleId: number;
+  };
 }
