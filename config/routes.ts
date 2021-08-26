@@ -12,8 +12,17 @@ export default [
     icon: 'table',
     path: '/order',
     routes: [
-      { name: '订单列表', path: '/order/list', component: './OrderList' },
-      { name: '创建订单', path: '/order/create', component: './CreateOrder' },
+      {
+        name: '订单列表',
+        path: '/order/list',
+        component: './OrderList',
+      },
+      {
+        name: '创建订单',
+        path: '/order/create',
+        component: './CreateOrder',
+        access: 'canNormal',
+      },
       { component: './404' },
     ],
   },
@@ -22,6 +31,7 @@ export default [
     icon: 'user',
     path: '/userManage',
     component: './user/List',
+    access: 'canAdmin',
   },
   { path: '/', redirect: '/order/list' },
   { component: './404' },
