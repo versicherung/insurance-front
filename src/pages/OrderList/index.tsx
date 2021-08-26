@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import { order, exportExcel } from '@/services/api';
+import { order, exportExcel, exportEvidence } from '@/services/api';
 
 const handleExportExcel = async (
   formRef: React.MutableRefObject<ProFormInstance | undefined>,
@@ -36,6 +36,28 @@ const handleExportExcel = async (
     const link = document.createElement('a');
     link.setAttribute('href', url);
     link.setAttribute('download', 'export.xlsx');
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
+    hide();
+    message.error('导出文件失败，请稍后重试');
+  }
+};
+
+const handleExportEvidence = async (ids: number[]) => {
+  const hide = message.loading('正在导出');
+
+  try {
+    const res = await exportEvidence({ ids });
+    hide();
+
+    const url = window.URL.createObjectURL(res);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'export.zip');
     link.style.display = 'none';
 
     document.body.appendChild(link);
@@ -110,7 +132,14 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a key="downloadFile">下载附件</a>,
+        <a
+          key="downloadFile"
+          onClick={() => {
+            handleExportEvidence([record.id]);
+          }}
+        >
+          下载证明材料
+        </a>,
         <a
           key="downloadInsurance"
           style={{
@@ -191,6 +220,15 @@ const TableList: React.FC = () => {
             }}
           >
             批量导出
+          </Button>
+
+          <Button
+            onClick={async () => {
+              await handleExportEvidence(selectedRowsState.map((item) => item.id));
+              setSelectedRows([]);
+            }}
+          >
+            批量导出证明材料
           </Button>
         </FooterToolbar>
       )}

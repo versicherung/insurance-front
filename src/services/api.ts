@@ -101,3 +101,14 @@ export async function updateOwnPassword(params: API.UpdateOwnPasswordParams) {
     data: params,
   });
 }
+
+// 下载附件 表格 GET /api/download/evidence
+export async function exportEvidence(params: { ids?: number[] }) {
+  return umiRequest('/api/download/evidence', {
+    responseType: 'blob',
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
