@@ -143,8 +143,11 @@ const TableList: React.FC = () => {
         <a
           key="downloadInsurance"
           style={{
-            pointerEvents: record.policy ? 'auto' : 'none',
-            opacity: record.policy ? 1 : 0.2,
+            // pointerEvents: record.policy ? 'auto' : 'none',
+            // opacity: record.policy ? 1 : 0.2,
+
+            pointerEvents: 'none',
+            opacity: 0.2,
           }}
         >
           下载保单
