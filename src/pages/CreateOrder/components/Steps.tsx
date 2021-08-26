@@ -8,6 +8,20 @@ import { businessOcr, certificateOcr, drivingOcr, idCardOcr } from '@/services/o
 import { createOrder } from '@/services/api';
 import UploadAliyunOSS from './UploadAliyunOSS';
 
+const handleOCR = async (callback: () => Promise<void>, failCallback: () => void) => {
+  const hide = message.loading('正在进行OCR识别');
+
+  try {
+    await callback();
+    message.info('识别成功');
+    hide();
+  } catch (e) {
+    hide();
+    message.error('识别失败');
+    failCallback();
+  }
+};
+
 const Steps: React.FC<{
   current: number;
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
@@ -175,20 +189,33 @@ const Steps: React.FC<{
               ref={idCardRef}
               namespace="idCard"
               ocrCallback={async (res) => {
-                const ocrRes = await idCardOcr(res.url);
-                const { data } = ocrRes;
+                handleOCR(
+                  async () => {
+                    const ocrRes = await idCardOcr(res.url);
+                    const { data } = ocrRes;
+                    secondRef.current?.setFieldsValue({
+                      name: data?.name,
+                      number: data?.number,
+                      address: data?.address,
+                    });
+                    setIsSecondAfterOcr(true);
+                    setFileIds((s) => ({
+                      ...s,
+                      idCardId: data?.id as number,
+                    }));
+                  },
+                  () => {
+                    idCardRef.current.setFileList([]);
+                  },
+                );
+              }}
+              onRemove={() => {
                 secondRef.current?.setFieldsValue({
-                  name: data?.name,
-                  number: data?.number,
-                  address: data?.address,
+                  name: '',
+                  number: '',
+                  address: '',
                 });
-                setIsSecondAfterOcr(true);
-                setFileIds((s) => ({
-                  ...s,
-                  idCardId: data?.id as number,
-                }));
-
-                return res;
+                setIsSecondAfterOcr(false);
               }}
             />
 
@@ -225,20 +252,33 @@ const Steps: React.FC<{
               ref={businessRef}
               namespace="business"
               ocrCallback={async (res) => {
-                const ocrRes = await businessOcr(res.url);
-                const { data } = ocrRes;
+                handleOCR(
+                  async () => {
+                    const ocrRes = await businessOcr(res.url);
+                    const { data } = ocrRes;
+                    secondRef.current?.setFieldsValue({
+                      name: data?.name,
+                      number: data?.number,
+                      address: data?.address,
+                    });
+                    setIsSecondAfterOcr(true);
+                    setFileIds((s) => ({
+                      ...s,
+                      businessId: data?.id as number,
+                    }));
+                  },
+                  () => {
+                    businessRef.current.setFileList([]);
+                  },
+                );
+              }}
+              onRemove={() => {
                 secondRef.current?.setFieldsValue({
-                  name: data?.name,
-                  number: data?.number,
-                  address: data?.address,
+                  name: '',
+                  number: '',
+                  address: '',
                 });
-                setIsSecondAfterOcr(true);
-                setFileIds((s) => ({
-                  ...s,
-                  businessId: data?.id as number,
-                }));
-
-                return res;
+                setIsSecondAfterOcr(false);
               }}
             />
 
@@ -319,21 +359,36 @@ const Steps: React.FC<{
               ref={drivingRef}
               namespace="driving"
               ocrCallback={async (res) => {
-                const ocrRes = await drivingOcr(res.url);
-                const { data } = ocrRes;
+                handleOCR(
+                  async () => {
+                    const ocrRes = await drivingOcr(res.url);
+                    const { data } = ocrRes;
+                    thirdRef.current?.setFieldsValue({
+                      plate: data?.plate,
+                      vehicleType: data?.type,
+                      engine: data?.engine,
+                      frame: data?.frame,
+                    });
+                    setIsThirdAfterOcr(true);
+                    setFileIds((s) => ({
+                      ...s,
+                      drivingId: data?.id as number,
+                    }));
+                  },
+                  () => {
+                    drivingRef.current.setFileList([]);
+                  },
+                );
+              }}
+              onRemove={() => {
                 thirdRef.current?.setFieldsValue({
-                  plate: data?.plate,
-                  vehicleType: data?.type,
-                  engine: data?.engine,
-                  frame: data?.frame,
+                  plate: '',
+                  vehicleType: '',
+                  engine: '',
+                  frame: '',
                 });
-                setIsThirdAfterOcr(true);
-                setFileIds((s) => ({
-                  ...s,
-                  drivingId: data?.id as number,
-                }));
 
-                return res;
+                setIsThirdAfterOcr(false);
               }}
             />
 
@@ -379,19 +434,31 @@ const Steps: React.FC<{
               ref={certificateRef}
               namespace="certificate"
               ocrCallback={async (res) => {
-                const ocrRes = await certificateOcr(res.url);
-                const { data } = ocrRes;
+                handleOCR(
+                  async () => {
+                    const ocrRes = await certificateOcr(res.url);
+                    const { data } = ocrRes;
+                    thirdRef.current?.setFieldsValue({
+                      engine: data?.engine,
+                      frame: data?.frame,
+                    });
+                    setIsThirdAfterOcr(true);
+                    setFileIds((s) => ({
+                      ...s,
+                      certificateId: data?.id as number,
+                    }));
+                  },
+                  () => {
+                    certificateRef.current.setFileList([]);
+                  },
+                );
+              }}
+              onRemove={() => {
                 thirdRef.current?.setFieldsValue({
-                  engine: data?.engine,
-                  frame: data?.frame,
+                  engine: '',
+                  frame: '',
                 });
-                setIsThirdAfterOcr(true);
-                setFileIds((s) => ({
-                  ...s,
-                  certificateId: data?.id as number,
-                }));
-
-                return res;
+                setIsThirdAfterOcr(false);
               }}
             />
 
@@ -435,6 +502,7 @@ const Steps: React.FC<{
 
             return res;
           }}
+          onRemove={() => {}}
         />
       </StepsForm.StepForm>
     </StepsForm>

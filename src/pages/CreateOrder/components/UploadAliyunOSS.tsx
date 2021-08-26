@@ -23,10 +23,11 @@ const UploadButton: React.FC<{ loading?: boolean }> = ({ loading }) => (
 const UploadAliyunOSS: React.FC<{
   namespace: string;
   ocrCallback: (res: any) => Promise<any>;
+  onRemove: () => void;
   ref?: any;
   count?: number;
 }> = React.forwardRef((props, ref) => {
-  const { namespace, ocrCallback, count = 1 } = props;
+  const { namespace, ocrCallback, onRemove, count = 1 } = props;
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -40,6 +41,7 @@ const UploadAliyunOSS: React.FC<{
   const handleOnChange: (info: UploadChangeParam<UploadFile<any>>) => void = ({ file }) => {
     if (file.status === 'removed') {
       setFileList([]);
+      onRemove();
     }
   };
 
@@ -83,9 +85,6 @@ const UploadAliyunOSS: React.FC<{
       client
         .put(`${namespace}/${name[name.length - 2]}-${uuidv4()}.${fix}`, file)
         .then((res) => {
-          return ocrCallback(res);
-        })
-        .then((res) => {
           const imgRes = {
             uid: '-1',
             name: res.name,
@@ -94,6 +93,10 @@ const UploadAliyunOSS: React.FC<{
           };
 
           setFileList([imgRes]);
+          return res;
+        })
+        .then((res) => {
+          ocrCallback(res);
         })
         .catch(() => {
           setFileList([]);

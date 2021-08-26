@@ -27,6 +27,13 @@ export default [
     ],
   },
   {
+    name: '保单上传',
+    icon: 'cloud-upload',
+    path: '/uploadPolicy',
+    component: './uploadPolicy',
+    access: 'canAdmin',
+  },
+  {
     name: '用户管理',
     icon: 'user',
     path: '/userManage',
