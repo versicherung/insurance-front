@@ -195,6 +195,7 @@ const Steps: React.FC<{
             <ProFormText
               name="name"
               label="姓名"
+              width="md"
               placeholder="请输入姓名"
               disabled={!isSecondAfterOcr}
               rules={[{ required: true }]}
@@ -203,6 +204,7 @@ const Steps: React.FC<{
             <ProFormText
               name="number"
               label="身份证号码"
+              width="md"
               placeholder="请输入身份证号码"
               disabled={!isSecondAfterOcr}
               rules={[{ required: true }]}
@@ -211,6 +213,7 @@ const Steps: React.FC<{
             <ProFormText
               name="address"
               label="住址"
+              width="md"
               placeholder="请输入住址"
               disabled={!isSecondAfterOcr}
               rules={[{ required: true }]}
@@ -242,6 +245,7 @@ const Steps: React.FC<{
             <ProFormText
               name="name"
               label="企业名称"
+              width="md"
               placeholder="请输入企业名称"
               disabled={!isSecondAfterOcr}
               rules={[{ required: true }]}
@@ -250,6 +254,7 @@ const Steps: React.FC<{
             <ProFormText
               name="number"
               label="统一信用代码"
+              width="md"
               placeholder="请输入统一信用代码"
               disabled={!isSecondAfterOcr}
               rules={[{ required: true }]}
@@ -258,6 +263,7 @@ const Steps: React.FC<{
             <ProFormText
               name="address"
               label="地址"
+              width="md"
               placeholder="请输入地址"
               disabled={!isSecondAfterOcr}
               rules={[{ required: true }]}
@@ -334,6 +340,7 @@ const Steps: React.FC<{
             <ProFormText
               name="plate"
               label="车牌号码"
+              width="md"
               placeholder="请输入车牌号码"
               disabled={!isThirdAfterOcr}
               rules={[{ required: true }]}
@@ -342,6 +349,7 @@ const Steps: React.FC<{
             <ProFormText
               name="vehicleType"
               label="车辆类型"
+              width="md"
               placeholder="请输入车辆类型"
               disabled={!isThirdAfterOcr}
               rules={[{ required: true }]}
@@ -350,6 +358,7 @@ const Steps: React.FC<{
             <ProFormText
               name="engine"
               label="发动机号"
+              width="md"
               placeholder="请输入发动机号"
               disabled={!isThirdAfterOcr}
               rules={[{ required: true }]}
@@ -358,6 +367,7 @@ const Steps: React.FC<{
             <ProFormText
               name="frame"
               label="车架号"
+              width="md"
               placeholder="请输入车架号"
               disabled={!isThirdAfterOcr}
               rules={[{ required: true }]}
@@ -388,6 +398,7 @@ const Steps: React.FC<{
             <ProFormText
               name="engine"
               label="发动机号"
+              width="md"
               placeholder="请输入发动机号"
               disabled={!isThirdAfterOcr}
               rules={[{ required: true }]}
@@ -396,6 +407,7 @@ const Steps: React.FC<{
             <ProFormText
               name="frame"
               label="车架号"
+              width="md"
               placeholder="请输入车架号"
               disabled={!isThirdAfterOcr}
               rules={[{ required: true }]}
@@ -405,9 +417,25 @@ const Steps: React.FC<{
       </StepsForm.StepForm>
 
       <StepsForm.StepForm title="上传其他材料">
-        {/* <Upload listType="picture-card" className="primary-uploader">
-          <UploadButton />
-        </Upload> */}
+        <UploadAliyunOSS
+          namespace="otherFile"
+          ocrCallback={async (res) => {
+            // const ocrRes = await businessOcr(res.url);
+            // const { data } = ocrRes;
+            // secondRef.current?.setFieldsValue({
+            //   name: data?.name,
+            //   number: data?.number,
+            //   address: data?.address,
+            // });
+            // setIsSecondAfterOcr(true);
+            // setFileIds((s) => ({
+            //   ...s,
+            //   businessId: data?.id as number,
+            // }));
+
+            return res;
+          }}
+        />
       </StepsForm.StepForm>
     </StepsForm>
   );

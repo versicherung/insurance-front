@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle } from 'react';
-import { Upload, message } from 'antd';
+import { Upload, message, Modal } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,10 +23,13 @@ const UploadButton: React.FC<{ loading?: boolean }> = ({ loading }) => (
 const UploadAliyunOSS: React.FC<{
   namespace: string;
   ocrCallback: (res: any) => Promise<any>;
-  ref: any;
+  ref?: any;
+  count?: number;
 }> = React.forwardRef((props, ref) => {
-  const { namespace, ocrCallback } = props;
+  const { namespace, ocrCallback, count = 1 } = props;
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
 
   useImperativeHandle(ref, () => {
     return {
@@ -100,16 +103,31 @@ const UploadAliyunOSS: React.FC<{
   };
 
   return (
-    <Upload
-      listType="picture-card"
-      className="primary-uploader"
-      fileList={fileList}
-      onChange={handleOnChange}
-      beforeUpload={beforeUpload}
-      customRequest={customRequest}
-    >
-      {fileList.length === 0 && <UploadButton />}
-    </Upload>
+    <>
+      <Upload
+        listType="picture-card"
+        className="primary-uploader"
+        fileList={fileList}
+        onChange={handleOnChange}
+        beforeUpload={beforeUpload}
+        customRequest={customRequest}
+        onPreview={(file) => {
+          setPreviewImage(file.url as string);
+          setPreviewVisible(true);
+        }}
+      >
+        {fileList.length < count && <UploadButton />}
+      </Upload>
+
+      <Modal
+        visible={previewVisible}
+        title="预览图片"
+        footer={null}
+        onCancel={() => setPreviewVisible(false)}
+      >
+        <img alt="example" style={{ width: '100%' }} src={previewImage} />
+      </Modal>
+    </>
   );
 });
 
