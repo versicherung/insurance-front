@@ -112,3 +112,13 @@ export async function exportEvidence(params: { ids?: number[] }) {
     },
   });
 }
+
+// 获取保单列表 表格 GET /api/insurance/policy
+export async function policyList(params: API.PolicyListParams) {
+  return request<API.PolicyListResult>('/api/insurance/policy', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}

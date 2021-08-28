@@ -139,4 +139,22 @@ declare namespace API {
   type UpdateOwnPasswordParams = {
     newPassword: string;
   };
+
+  type PolicyListParams = {
+    current?: number;
+    pageSize?: number;
+  };
+
+  type PolicyListItem = {
+    id: number;
+    name: string;
+    url: string;
+    number: string;
+    processType: number;
+  };
+
+  type PolicyListResult = Result<{
+    total: number;
+    items: PolicyListItem[];
+  }>;
 }
