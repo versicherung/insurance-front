@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 
-import { order, exportExcel, exportEvidence } from '@/services/api';
+import { order, exportExcel, exportEvidence, exportPolicy } from '@/services/api';
 
 const handleExportExcel = async (
   formRef: React.MutableRefObject<ProFormInstance | undefined>,
@@ -52,6 +52,28 @@ const handleExportEvidence = async (ids: number[]) => {
 
   try {
     const res = await exportEvidence({ ids });
+    hide();
+
+    const url = window.URL.createObjectURL(res);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'export.zip');
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
+    hide();
+    message.error('导出文件失败，请稍后重试');
+  }
+};
+
+const handleExportPolicy = async (ids: number[]) => {
+  const hide = message.loading('正在导出');
+
+  try {
+    const res = await exportPolicy({ ids });
     hide();
 
     const url = window.URL.createObjectURL(res);
@@ -142,12 +164,12 @@ const TableList: React.FC = () => {
         </a>,
         <a
           key="downloadInsurance"
+          onClick={() => {
+            handleExportPolicy([record.id]);
+          }}
           style={{
-            // pointerEvents: record.policy ? 'auto' : 'none',
-            // opacity: record.policy ? 1 : 0.2,
-
-            pointerEvents: 'none',
-            opacity: 0.2,
+            pointerEvents: record.policy ? 'auto' : 'none',
+            opacity: record.policy ? 1 : 0.2,
           }}
         >
           下载保单
@@ -177,7 +199,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
           <Button key="out" onClick={() => handleExportExcel(formRef)}>
-            导出全部
+            导出承保信息
           </Button>,
         ]}
         request={async (params) => {

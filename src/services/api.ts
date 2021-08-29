@@ -102,9 +102,20 @@ export async function updateOwnPassword(params: API.UpdateOwnPasswordParams) {
   });
 }
 
-// 下载附件 表格 GET /api/download/evidence
+// 下载附件 GET /api/download/evidence
 export async function exportEvidence(params: { ids?: number[] }) {
   return umiRequest('/api/download/evidence', {
+    responseType: 'blob',
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+// 下载保单 GET /api/download/policy
+export async function exportPolicy(params: { ids?: number[] }) {
+  return umiRequest('/api/download/policy', {
     responseType: 'blob',
     method: 'GET',
     params: {
