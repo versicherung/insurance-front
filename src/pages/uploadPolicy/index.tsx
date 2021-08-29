@@ -54,6 +54,7 @@ const UploadPolicy: React.FC = () => {
         <a
           key="download"
           href={record.url}
+          target="_blank"
           style={{
             pointerEvents: record.url ? 'auto' : 'none',
             opacity: record.url ? 1 : 0.2,
