@@ -43,6 +43,23 @@ export async function order(
   });
 }
 
+/** 获取订单详情 GET /api/insurance/detail */
+export async function orderDetail(
+  params: {
+    // query
+    id: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<API.OrderDetail>('/api/insurance/detail', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 // 导出 Excel 表格 GET /api/insurance/export
 export async function exportExcel(params: { startTime?: string; endTime?: string; id?: number[] }) {
   return umiRequest('/api/insurance/export', {

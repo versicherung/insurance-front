@@ -39,6 +39,46 @@ declare namespace API {
 
   type OrderList = Result<{ total: number; items: OrderListItem[] }>;
 
+  type OrderDetail = Result<{
+    id: number;
+    owner: string;
+    licensePlate: string;
+    startTime: string;
+    carType: string;
+    payType: string;
+
+    idCard?: {
+      url: string;
+      address: string;
+      number: string;
+    };
+
+    business?: {
+      url: string;
+      address: string;
+      number: string;
+    };
+
+    driving?: {
+      url: string;
+      frame: string;
+      engine: string;
+      type: string;
+    };
+
+    certificate?: {
+      url: string;
+      frame: string;
+      engine: string;
+    };
+
+    policy?: {
+      url: string;
+      name: string;
+      number: string;
+    };
+  }>;
+
   type AliyunSTSResult = Result<{
     accessKey: string;
     accessKeySecret: string;
