@@ -39,7 +39,7 @@ declare namespace API {
 
   type OrderList = Result<{ total: number; items: OrderListItem[] }>;
 
-  type OrderDetail = Result<{
+  type OrderDetailData = {
     id: number;
     owner: string;
     licensePlate: string;
@@ -77,41 +77,9 @@ declare namespace API {
       name: string;
       number: string;
     };
-  }>;
+  };
 
-  type AliyunSTSResult = Result<{
-    accessKey: string;
-    accessKeySecret: string;
-    securityToken: string;
-  }>;
-
-  type IdCardOcrResult = Result<{
-    id: number;
-    name: string;
-    number: string;
-    address: string;
-  }>;
-
-  type BusinessOcrResult = Result<{
-    id: number;
-    name: string;
-    number: string;
-    address: string;
-  }>;
-
-  type DrivingOcrResult = Result<{
-    id: number;
-    plate: string;
-    engine: string;
-    frame: string;
-    type: string;
-  }>;
-
-  type CertificateOcrResult = Result<{
-    id: number;
-    engine: string;
-    frame: string;
-  }>;
+  type OrderDetail = Result<OrderDetailData>;
 
   type CreateOrderParams = {
     startTime: string;
