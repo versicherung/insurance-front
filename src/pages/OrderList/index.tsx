@@ -1,13 +1,21 @@
 import React, { useState, useRef } from 'react';
 import { history, useRequest, useModel } from 'umi';
-import { Button, message } from 'antd';
+import { Button, Dropdown, Menu, message } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import type { MenuClickEventHandler } from 'rc-menu/lib/interface';
 
-import { order, exportExcel, exportEvidence, exportPolicy, orderDetail } from '@/services/api';
+import {
+  order,
+  exportExcel,
+  exportEvidence,
+  exportPolicy,
+  orderDetail,
+  exportOverPolicy,
+} from '@/services/api';
 
 import DetailDraw from './components/DetailDraw';
 
@@ -91,6 +99,68 @@ const handleExportPolicy = async (ids: number[]) => {
     hide();
     message.error('导出文件失败，请稍后重试');
   }
+};
+
+const handleExportOverPolicy = async (ids: number[], downloadType: number) => {
+  const hide = message.loading('正在导出');
+
+  try {
+    const res = await exportOverPolicy({ ids, downloadType });
+    hide();
+
+    const url = window.URL.createObjectURL(res);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'export.zip');
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
+    hide();
+    message.error('导出文件失败，请稍后重试');
+  }
+};
+
+const DropDownMenu: React.FC<{ id: number; policy: boolean; overPolicy: boolean }> = ({
+  id,
+  policy,
+  overPolicy,
+}) => {
+  const handleMenuClick: MenuClickEventHandler = ({ key }) => {
+    if (key === 'downloadInsurance') {
+      handleExportPolicy([id]);
+      return;
+    }
+
+    if (key === 'downloadOverInsuranceWithPng') {
+      handleExportOverPolicy([id], 0);
+      return;
+    }
+
+    if (key === 'downloadOverInsuranceWithPDF') {
+      handleExportOverPolicy([id], 1);
+      return;
+    }
+
+    if (key === 'downloadOverInsuranceWithAll') {
+      handleExportOverPolicy([id], 2);
+    }
+  };
+
+  return (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="downloadInsurance" disabled={!policy}>
+        下载出保单
+      </Menu.Item>
+      <Menu.SubMenu title="下载投保单" disabled={!overPolicy}>
+        <Menu.Item key="downloadOverInsuranceWithPng">仅图片</Menu.Item>
+        <Menu.Item key="downloadOverInsuranceWithPDF">仅PDF</Menu.Item>
+        <Menu.Item key="downloadOverInsuranceWithAll">全部材料</Menu.Item>
+      </Menu.SubMenu>
+    </Menu>
+  );
 };
 
 const TableList: React.FC = () => {
@@ -178,18 +248,24 @@ const TableList: React.FC = () => {
         >
           下载证明材料
         </a>,
-        <a
-          key="downloadInsurance"
-          onClick={() => {
-            handleExportPolicy([record.id]);
-          }}
-          style={{
-            pointerEvents: record.policy ? 'auto' : 'none',
-            opacity: record.policy ? 1 : 0.2,
-          }}
+        <Dropdown
+          overlay={
+            <DropDownMenu
+              id={record.id}
+              policy={typeof record.policy === 'string'}
+              overPolicy={typeof record.overPolicy === 'string'}
+            />
+          }
         >
-          下载保单
-        </a>,
+          <a
+            key="moreAction"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <EllipsisOutlined />
+          </a>
+        </Dropdown>,
       ],
     },
   ];

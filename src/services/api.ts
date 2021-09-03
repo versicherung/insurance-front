@@ -141,6 +141,17 @@ export async function exportPolicy(params: { ids?: number[] }) {
   });
 }
 
+// 下载投保单 GET /api/download/overInsurancePolicy
+export async function exportOverPolicy(params: { ids?: number[]; downloadType: number }) {
+  return umiRequest('/api/download/overInsurancePolicy', {
+    responseType: 'blob',
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
 // 获取保单列表 表格 GET /api/insurance/policy
 export async function policyList(params: API.PolicyListParams) {
   return request<API.PolicyListResult>('/api/insurance/policy', {

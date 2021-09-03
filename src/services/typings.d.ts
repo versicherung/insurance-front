@@ -33,6 +33,7 @@ declare namespace API {
     licensePlate: string;
     owner: string;
     payType: string;
+    overPolicy?: string;
     policy?: string;
     startTime: string;
     username?: string;
