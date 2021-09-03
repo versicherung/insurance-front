@@ -123,29 +123,29 @@ const handleExportOverPolicy = async (ids: number[], downloadType: number) => {
   }
 };
 
-const DropDownMenu: React.FC<{ id: number; policy: boolean; overPolicy: boolean }> = ({
-  id,
+const DropDownMenu: React.FC<{ ids: number[]; policy: boolean; overPolicy: boolean }> = ({
+  ids,
   policy,
   overPolicy,
 }) => {
   const handleMenuClick: MenuClickEventHandler = ({ key }) => {
     if (key === 'downloadInsurance') {
-      handleExportPolicy([id]);
+      handleExportPolicy(ids);
       return;
     }
 
     if (key === 'downloadOverInsuranceWithPng') {
-      handleExportOverPolicy([id], 0);
+      handleExportOverPolicy(ids, 0);
       return;
     }
 
     if (key === 'downloadOverInsuranceWithPDF') {
-      handleExportOverPolicy([id], 1);
+      handleExportOverPolicy(ids, 1);
       return;
     }
 
     if (key === 'downloadOverInsuranceWithAll') {
-      handleExportOverPolicy([id], 2);
+      handleExportOverPolicy(ids, 2);
     }
   };
 
@@ -251,7 +251,7 @@ const TableList: React.FC = () => {
         <Dropdown
           overlay={
             <DropDownMenu
-              id={record.id}
+              ids={[record.id]}
               policy={typeof record.policy === 'string'}
               overPolicy={typeof record.overPolicy === 'string'}
             />
@@ -334,18 +334,43 @@ const TableList: React.FC = () => {
                 selectedRowsState.map((item) => item.id),
               );
               setSelectedRows([]);
+              actionRef.current?.clearSelected?.();
             }}
           >
-            批量导出
+            导出承保信息
           </Button>
 
           <Button
             onClick={async () => {
               await handleExportEvidence(selectedRowsState.map((item) => item.id));
               setSelectedRows([]);
+              actionRef.current?.clearSelected?.();
             }}
           >
-            批量导出证明材料
+            导出证明材料
+          </Button>
+
+          <Button
+            onClick={async () => {
+              await handleExportPolicy(selectedRowsState.map((item) => item.id));
+              setSelectedRows([]);
+              actionRef.current?.clearSelected?.();
+            }}
+          >
+            导出出保单
+          </Button>
+
+          <Button
+            onClick={async () => {
+              await handleExportOverPolicy(
+                selectedRowsState.map((item) => item.id),
+                0,
+              );
+              setSelectedRows([]);
+              actionRef.current?.clearSelected?.();
+            }}
+          >
+            导出投保单（图片版）
           </Button>
         </FooterToolbar>
       )}
