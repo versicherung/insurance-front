@@ -35,6 +35,7 @@ declare namespace API {
     payType: string;
     policy?: string;
     startTime: string;
+    username?: string;
   };
 
   type OrderList = Result<{ total: number; items: OrderListItem[] }>;

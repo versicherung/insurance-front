@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { history, useRequest } from 'umi';
+import { history, useRequest, useModel } from 'umi';
 import { Button, message } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -103,6 +103,7 @@ const TableList: React.FC = () => {
     loading: detailLoading,
     run,
   } = useRequest(orderDetail, { manual: true });
+  const { initialState } = useModel('@@initialState');
 
   const columns: ProColumns<API.OrderListItem>[] = [
     {
@@ -147,6 +148,12 @@ const TableList: React.FC = () => {
           };
         },
       },
+    },
+    {
+      title: '创建人',
+      dataIndex: 'username',
+      hideInTable: initialState?.currentUser?.role === 4,
+      search: false,
     },
     {
       title: '车型',
