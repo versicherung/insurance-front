@@ -31,7 +31,7 @@ export default [
     icon: 'cloud-upload',
     path: '/uploadPolicy',
     component: './uploadPolicy',
-    access: 'canAdmin',
+    access: 'canAdminAndInsurance',
   },
   {
     name: '用户管理',
