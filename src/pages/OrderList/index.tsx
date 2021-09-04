@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { history, useRequest, useModel } from 'umi';
+import { useRequest, useModel } from 'umi';
 import { Button, Dropdown, Menu, message } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import type { MenuClickEventHandler } from 'rc-menu/lib/interface';
@@ -281,16 +281,16 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              history.push('/order/create');
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
-          <Button key="out" onClick={() => handleExportExcel(formRef)}>
+          // <Button
+          //   type="primary"
+          //   key="primary"
+          //   onClick={() => {
+          //     history.push('/order/create');
+          //   }}
+          // >
+          //   <PlusOutlined /> 新建
+          // </Button>,
+          <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
             导出承保信息
           </Button>,
         ]}
