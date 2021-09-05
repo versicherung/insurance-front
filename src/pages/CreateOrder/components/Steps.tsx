@@ -87,7 +87,7 @@ const Steps: React.FC<{
 
     const hide = message.loading('正在创建订单');
     try {
-      createOrder(data);
+      await createOrder(data);
       hide();
       message.info('订单创建成功');
       setIsFinish(true);
@@ -483,7 +483,7 @@ const Steps: React.FC<{
         )}
       </StepsForm.StepForm>
 
-      <StepsForm.StepForm title="上传其他材料">
+      {/* <StepsForm.StepForm title="上传其他材料">
         <UploadAliyunOSS
           namespace="otherFile"
           ocrCallback={async (res) => {
@@ -504,7 +504,7 @@ const Steps: React.FC<{
           }}
           onRemove={() => {}}
         />
-      </StepsForm.StepForm>
+      </StepsForm.StepForm> */}
     </StepsForm>
   );
 };
