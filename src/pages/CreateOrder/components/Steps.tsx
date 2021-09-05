@@ -9,7 +9,7 @@ import { createOrder } from '@/services/api';
 import UploadAliyunOSS from './UploadAliyunOSS';
 
 const handleOCR = async (callback: () => Promise<void>, failCallback: () => void) => {
-  const hide = message.loading('正在进行OCR识别');
+  const hide = message.loading('正在进行OCR识别', 0);
 
   try {
     await callback();
@@ -85,7 +85,7 @@ const Steps: React.FC<{
       };
     }
 
-    const hide = message.loading('正在创建订单');
+    const hide = message.loading('正在创建订单', 0);
     try {
       await createOrder(data);
       hide();

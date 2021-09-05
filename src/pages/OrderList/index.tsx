@@ -24,7 +24,7 @@ const handleExportExcel = async (
   id?: number[],
 ) => {
   const params: { startTime?: string; endTime?: string; id?: number[] } = {};
-  const hide = message.loading('正在导出');
+  const hide = message.loading('正在导出', 0);
 
   // 为导出接口添加参数
   if (formRef.current) {
@@ -58,7 +58,7 @@ const handleExportExcel = async (
 };
 
 const handleExportEvidence = async (ids: number[]) => {
-  const hide = message.loading('正在导出');
+  const hide = message.loading('正在导出', 0);
 
   try {
     const res = await exportEvidence({ ids });
@@ -80,7 +80,7 @@ const handleExportEvidence = async (ids: number[]) => {
 };
 
 const handleExportPolicy = async (ids: number[]) => {
-  const hide = message.loading('正在导出');
+  const hide = message.loading('正在导出', 0);
 
   try {
     const res = await exportPolicy({ ids });
@@ -102,7 +102,7 @@ const handleExportPolicy = async (ids: number[]) => {
 };
 
 const handleExportOverPolicy = async (ids: number[], downloadType: number) => {
-  const hide = message.loading('正在导出');
+  const hide = message.loading('正在导出', 0);
 
   try {
     const res = await exportOverPolicy({ ids, downloadType });
