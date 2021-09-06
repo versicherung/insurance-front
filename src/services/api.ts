@@ -60,6 +60,23 @@ export async function orderDetail(
   });
 }
 
+/** 获取订单详情 DELETE /api/insurance */
+export async function deleteOrder(
+  params: {
+    // query
+    id: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<API.OrderDetail>('/api/insurance', {
+    method: 'DELETE',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 // 导出 Excel 表格 GET /api/insurance/export
 export async function exportExcel(params: { startTime?: string; endTime?: string; id?: number[] }) {
   return umiRequest('/api/insurance/export', {

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useRequest, useModel } from 'umi';
-import { Button, Dropdown, Menu, message } from 'antd';
+import { Button, Dropdown, Menu, message, Popconfirm } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { EllipsisOutlined } from '@ant-design/icons';
@@ -15,9 +15,23 @@ import {
   exportPolicy,
   orderDetail,
   exportOverPolicy,
+  deleteOrder,
 } from '@/services/api';
 
 import DetailDraw from './components/DetailDraw';
+
+const handleDeleteOrder = async (id: number) => {
+  const params: { id: number } = { id };
+  const hide = message.loading('正在删除', 0);
+
+  try {
+    await deleteOrder(params);
+    hide();
+  } catch (e) {
+    hide();
+    message.error('删除订单失败，请稍后重试');
+  }
+};
 
 const handleExportExcel = async (
   formRef: React.MutableRefObject<ProFormInstance | undefined>,
@@ -222,7 +236,7 @@ const TableList: React.FC = () => {
     {
       title: '创建人',
       dataIndex: 'username',
-      hideInTable: initialState?.currentUser?.role === 4,
+      hideInTable: initialState?.currentUser?.role === 8,
       search: false,
     },
     {
@@ -244,6 +258,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="downloadFile"
@@ -253,6 +268,29 @@ const TableList: React.FC = () => {
         >
           下载证明材料
         </a>,
+        initialState?.currentUser?.role !== 4 ? (
+          <Popconfirm
+            title="请确认删除！"
+            onConfirm={async () => {
+              await handleDeleteOrder(record.id);
+              actionRef.current?.reload();
+            }}
+            okText="是"
+            cancelText="否"
+          >
+            <a
+              key="deleteItem"
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+              style={{
+                color: 'red',
+              }}
+            >
+              删除
+            </a>
+          </Popconfirm>
+        ) : null,
         <Dropdown
           overlay={
             <DropDownMenu
