@@ -50,19 +50,16 @@ const UploadAliyunOSS: React.FC<{
     const isJPG = file.type === 'image/jpg';
     const isJPEG = file.type === 'image/jpeg';
     const isPNG = file.type === 'image/png';
-    const isLt2M = file.size / 1024 / 1024 < 1;
+    // const isLt10M = file.size / 1024 / 1024 < 10;
 
     if (!(isJPG || isJPEG || isPNG)) {
-      message.error({
-        title: '只能上传JPG、JPEG、PNG格式的图片~',
-      });
-    } else if (!isLt2M) {
-      message.error({
-        title: '图片超过1M限制，不允许上传~',
-      });
+      message.error('只能上传JPG、JPEG、PNG格式的图片~');
     }
-
-    return (isJPG || isJPEG || isPNG) && isLt2M;
+    // else if (!isLt10M) {
+    //   message.error('图片超过1M限制，不允许上传~');
+    // }
+    return isJPG || isJPEG || isPNG;
+    // return (isJPG || isJPEG || isPNG) && isLt10M;
   };
 
   const customRequest: (options: UploadRequestOption) => any = (opt) => {
@@ -108,6 +105,7 @@ const UploadAliyunOSS: React.FC<{
   return (
     <>
       <Upload
+        accept=".jpg,.jpeg,.png"
         listType="picture-card"
         className="primary-uploader"
         fileList={fileList}
