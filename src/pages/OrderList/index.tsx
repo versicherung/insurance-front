@@ -198,7 +198,6 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              // setCurrentRow(entity);
               run({ id: record.id });
               setShowDetail(true);
             }}
@@ -211,13 +210,23 @@ const TableList: React.FC = () => {
     {
       title: '车牌号',
       dataIndex: 'licensePlate',
-      hideInSearch: true,
     },
     {
       title: '起保时间',
       dataIndex: 'startTime',
       valueType: 'date',
-      hideInSearch: true,
+      search: false,
+    },
+    {
+      title: '创建人',
+      dataIndex: 'username',
+      hideInTable: initialState?.currentUser?.role === 8,
+      search: false,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createAt',
+      search: false,
     },
     {
       title: '创建时间',
@@ -234,15 +243,24 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '创建人',
-      dataIndex: 'username',
-      hideInTable: initialState?.currentUser?.role === 8,
-      search: false,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createAt',
-      search: false,
+      title: '查找方式',
+      dataIndex: 'accurate',
+      valueType: 'radio',
+      width: 100,
+      hideInTable: true,
+      initialValue: 'vague',
+      valueEnum: {
+        vague: { text: '模糊查找' },
+        accurate: { text: '精确查找' },
+      },
+      search: {
+        transform: (value) => {
+          if (value === 'accurate') {
+            return { accurate: true };
+          }
+          return { accurate: false };
+        },
+      },
     },
     {
       title: '车型',
