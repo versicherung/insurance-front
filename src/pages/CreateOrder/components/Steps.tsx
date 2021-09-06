@@ -113,7 +113,7 @@ const Steps: React.FC<{
         title="选择车辆类型，设置基本信息"
         initialValues={{
           insuranceType: 'newCar',
-          startTime: moment(),
+          startTime: moment().add(1, 'd'),
           payment: 1,
           carType: 1,
         }}
@@ -133,7 +133,24 @@ const Steps: React.FC<{
           label="起保日期"
           width="md"
           name="startTime"
-          rules={[{ required: true, message: '请选择起保日期' }]}
+          rules={[
+            { required: true, message: '请选择起保日期' },
+            () => ({
+              validator(_, value) {
+                if (
+                  moment()
+                    .add(13 * 30, 'minute')
+                    .isAfter(value.startOf('day').format())
+                ) {
+                  return Promise.reject(
+                    new Error(`现在无法创建起保时间为${value.format('YYYY-MM-DD')}的订单`),
+                  );
+                }
+
+                return Promise.resolve();
+              },
+            }),
+          ]}
         />
 
         <ProFormSelect

@@ -335,7 +335,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.OrderListItem, API.PageParams>
-        headerTitle={'顶单列表'}
+        headerTitle={'订单列表'}
         actionRef={actionRef}
         formRef={formRef}
         rowKey="id"
