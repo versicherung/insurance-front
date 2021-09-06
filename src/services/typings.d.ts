@@ -37,6 +37,7 @@ declare namespace API {
     policy?: string;
     startTime: string;
     username?: string;
+    createAt: string;
   };
 
   type OrderList = Result<{ total: number; items: OrderListItem[] }>;

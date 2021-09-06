@@ -226,6 +226,11 @@ const TableList: React.FC = () => {
       search: false,
     },
     {
+      title: '创建时间',
+      dataIndex: 'createAt',
+      search: false,
+    },
+    {
       title: '车型',
       dataIndex: 'carType',
       search: false,
