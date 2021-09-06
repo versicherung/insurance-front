@@ -190,6 +190,7 @@ const TableList: React.FC = () => {
   const { initialState } = useModel('@@initialState');
 
   const columns: ProColumns<API.OrderListItem>[] = [
+    { title: '序号', dataIndex: 'id' },
     {
       title: '车主',
       dataIndex: 'owner',

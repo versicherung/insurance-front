@@ -4,7 +4,7 @@ import { StepsForm, ProFormSelect, ProFormDatePicker, ProFormText } from '@ant-d
 import moment from 'moment';
 
 import type { FormInstance } from 'antd';
-import { businessOcr, certificateOcr, drivingOcr, idCardOcr } from '@/services/ocr';
+import { businessOcr, certificateOcr, drivingOcr, idCardOcr, otherFile } from '@/services/ocr';
 import { createOrder } from '@/services/api';
 import UploadAliyunOSS from './UploadAliyunOSS';
 
@@ -27,11 +27,18 @@ const Steps: React.FC<{
   setCurrent: React.Dispatch<React.SetStateAction<number>>;
   setIsFinish: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ current, setCurrent, setIsFinish }) => {
-  const [fileIds, setFileIds] = useState({
+  const [fileIds, setFileIds] = useState<{
+    idCardId: number;
+    businessId: number;
+    drivingId: number;
+    certificateId: number;
+    otherFileId: number[];
+  }>({
     idCardId: 0,
     businessId: 0,
     drivingId: 0,
     certificateId: 0,
+    otherFileId: [],
   });
 
   const [isIdCard, setIsIdCard] = useState(true);
@@ -51,6 +58,7 @@ const Steps: React.FC<{
       startTime: value.startTime,
       carTypeId: value.carType,
       paymentId: value.payment,
+      otherFileId: fileIds.otherFileId,
     };
 
     if (value.idOrBusiness === 'idCard') {
@@ -483,28 +491,32 @@ const Steps: React.FC<{
         )}
       </StepsForm.StepForm>
 
-      {/* <StepsForm.StepForm title="上传其他材料">
+      <StepsForm.StepForm title="上传其他材料">
         <UploadAliyunOSS
           namespace="otherFile"
           ocrCallback={async (res) => {
-            // const ocrRes = await businessOcr(res.url);
-            // const { data } = ocrRes;
-            // secondRef.current?.setFieldsValue({
-            //   name: data?.name,
-            //   number: data?.number,
-            //   address: data?.address,
-            // });
-            // setIsSecondAfterOcr(true);
-            // setFileIds((s) => ({
-            //   ...s,
-            //   businessId: data?.id as number,
-            // }));
+            try {
+              const backRes = await otherFile(res.url);
+              const { data } = backRes;
 
-            return res;
+              if (data) {
+                setFileIds((s) => ({
+                  ...s,
+                  otherFileId: [...s.otherFileId, data.id],
+                }));
+              }
+            } catch (e) {
+              message.error('上传失败请重试！');
+            }
           }}
-          onRemove={() => {}}
+          onRemove={() => {
+            setFileIds((s) => ({
+              ...s,
+              otherFileId: [],
+            }));
+          }}
         />
-      </StepsForm.StepForm> */}
+      </StepsForm.StepForm>
     </StepsForm>
   );
 };

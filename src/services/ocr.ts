@@ -35,3 +35,12 @@ export function certificateOcr(url: string) {
     },
   });
 }
+
+export function otherFile(url: string) {
+  return request<API.OtherFileResult>('/api/ocr/otherFile', {
+    method: 'POST',
+    data: {
+      imgUrl: url,
+    },
+  });
+}
