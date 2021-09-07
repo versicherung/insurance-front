@@ -190,7 +190,13 @@ const TableList: React.FC = () => {
   const { initialState } = useModel('@@initialState');
 
   const columns: ProColumns<API.OrderListItem>[] = [
-    { title: '序号', dataIndex: 'id' },
+    {
+      title: '序号',
+      dataIndex: 'id',
+      render: (_, record) => {
+        return `PICC-CP-${record.id.toString().padStart(6, '0')}`;
+      },
+    },
     {
       title: '车主',
       dataIndex: 'owner',
@@ -342,16 +348,10 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
+        pagination={{
+          pageSize: 30,
+        }}
         toolBarRender={() => [
-          // <Button
-          //   type="primary"
-          //   key="primary"
-          //   onClick={() => {
-          //     history.push('/order/create');
-          //   }}
-          // >
-          //   <PlusOutlined /> 新建
-          // </Button>,
           <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
             导出承保信息
           </Button>,
