@@ -227,7 +227,7 @@ const TableList: React.FC = () => {
     {
       title: '创建人',
       dataIndex: 'username',
-      hideInTable: initialState?.currentUser?.role === 8,
+      hideInTable: initialState?.currentUser?.role === 8 || initialState?.currentUser?.role === 4,
       search: false,
     },
     {
