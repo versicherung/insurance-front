@@ -88,6 +88,7 @@ const Steps: React.FC<{
     } else {
       data.certificate = {
         id: fileIds.certificateId,
+        type: value.vehicleType,
         frame: value.frame,
         engine: value.engine,
       };
@@ -466,6 +467,7 @@ const Steps: React.FC<{
                     thirdRef.current?.setFieldsValue({
                       engine: data?.engine,
                       frame: data?.frame,
+                      vehicleType: data?.carType,
                     });
                     setIsThirdAfterOcr(true);
                     setFileIds((s) => ({
@@ -482,9 +484,19 @@ const Steps: React.FC<{
                 thirdRef.current?.setFieldsValue({
                   engine: '',
                   frame: '',
+                  vehicleType: '',
                 });
                 setIsThirdAfterOcr(false);
               }}
+            />
+
+            <ProFormText
+              name="vehicleType"
+              label="车辆类型"
+              width="md"
+              placeholder="请输入车辆类型"
+              disabled={!isThirdAfterOcr}
+              rules={[{ required: true }]}
             />
 
             <ProFormText

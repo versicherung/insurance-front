@@ -68,6 +68,7 @@ declare namespace API {
 
     certificate?: {
       url: string;
+      type: string;
       frame: string;
       engine: string;
     };
@@ -107,6 +108,7 @@ declare namespace API {
     };
     certificate?: {
       id: number;
+      type: string;
       engine: string;
       frame: string;
     };
@@ -191,6 +193,7 @@ declare namespace API {
 
   type CertificateOcrResult = Result<{
     id: number;
+    carType: string;
     engine: string;
     frame: string;
   }>;
