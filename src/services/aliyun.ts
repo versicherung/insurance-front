@@ -13,7 +13,7 @@ const client = new OSS({
   accessKeyId: token.data?.accessKey as string,
   accessKeySecret: token.data?.accessKeySecret as string,
   stsToken: token.data?.securityToken as string,
-  bucket: 'versicherung',
+  bucket: 'wangweiinsurance',
   refreshSTSToken: async () => {
     const { data } = await getSTSToken();
     return {
