@@ -53,6 +53,10 @@ const Steps: React.FC<{
   const certificateRef = useRef<any>();
   const [isThirdAfterOcr, setIsThirdAfterOcr] = useState(false);
 
+  const [isPerson, setIsPerson] = useState(true);
+  const forthRef = useRef<FormInstance>();
+  const billRef = useRef<any>();
+
   const onFinish = async (value: any) => {
     const data: API.CreateOrderParams = {
       startTime: value.startTime,
@@ -111,7 +115,7 @@ const Steps: React.FC<{
   return (
     <StepsForm current={current} onCurrentChange={setCurrent} onFinish={onFinish}>
       <StepsForm.StepForm
-        title="选择车辆类型，设置基本信息"
+        title="设置基本信息"
         initialValues={{
           insuranceType: 'newCar',
           startTime: moment().add(1, 'd'),
@@ -514,6 +518,115 @@ const Steps: React.FC<{
               width="md"
               placeholder="请输入车架号"
               disabled={!isThirdAfterOcr}
+              rules={[{ required: true }]}
+            />
+          </>
+        )}
+      </StepsForm.StepForm>
+
+      <StepsForm.StepForm
+        title="上传发票信息"
+        formRef={forthRef}
+        initialValues={{
+          billType: 'person',
+        }}
+        onValuesChange={({ billType }) => {
+          if (billType) {
+            if (billType === 'person') {
+              forthRef.current?.setFieldsValue({
+                phoneNumber: '',
+              });
+            } else {
+              forthRef.current?.setFieldsValue({
+                address: '',
+              });
+            }
+
+            billRef.current?.setFileList([]);
+
+            setIsPerson(billType === 'person');
+          }
+        }}
+      >
+        <ProFormSelect
+          label="发票类型"
+          width="md"
+          name="billType"
+          rules={[{ required: true, message: '请选择发票类型' }]}
+          valueEnum={{
+            person: '普票',
+            company: '专票',
+          }}
+        />
+
+        {isPerson ? (
+          <ProFormText
+            name="phoneNumber"
+            label="电话号码"
+            width="md"
+            placeholder="请输入电话号码"
+            rules={[{ required: true }]}
+          />
+        ) : (
+          <>
+            {/* <UploadAliyunOSS
+              ref={billRef}
+              namespace="otherFile"
+              ocrCallback={async () => {}}
+              onRemove={() => {}}
+            /> */}
+
+            <ProFormText
+              name="billName"
+              label="名称"
+              width="md"
+              placeholder="请输入名称"
+              rules={[{ required: true }]}
+            />
+
+            <ProFormText
+              name="billNumber"
+              label="税号"
+              width="md"
+              placeholder="请输入税号"
+              rules={[{ required: true }]}
+            />
+
+            <ProFormText
+              name="billAddress"
+              label="单位地址"
+              width="md"
+              placeholder="请输入单位地址"
+              rules={[{ required: true }]}
+            />
+
+            <ProFormText
+              name="billPhoneNumber"
+              label="电话号码"
+              width="md"
+              placeholder="请输入电话号码"
+              rules={[{ required: true }]}
+            />
+            <ProFormText
+              name="billBank"
+              label="开户银行"
+              width="md"
+              placeholder="请输入开户银行"
+              rules={[{ required: true }]}
+            />
+            <ProFormText
+              name="billBankNumber"
+              label="银行账号"
+              width="md"
+              placeholder="请输入银行账号"
+              rules={[{ required: true }]}
+            />
+
+            <ProFormText
+              name="postAddress"
+              label="邮寄地址"
+              width="md"
+              placeholder="请输入邮寄地址"
               rules={[{ required: true }]}
             />
           </>
