@@ -349,7 +349,8 @@ const TableList: React.FC = () => {
           labelWidth: 120,
         }}
         pagination={{
-          pageSize: 30,
+          defaultPageSize: 30,
+          pageSizeOptions: ['20', '30', '50'],
         }}
         toolBarRender={() => [
           // <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
