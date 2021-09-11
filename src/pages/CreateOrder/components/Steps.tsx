@@ -53,9 +53,9 @@ const Steps: React.FC<{
   const certificateRef = useRef<any>();
   const [isThirdAfterOcr, setIsThirdAfterOcr] = useState(false);
 
-  const [isPerson, setIsPerson] = useState(true);
-  const forthRef = useRef<FormInstance>();
-  const billRef = useRef<any>();
+  // const [isPerson, setIsPerson] = useState(true);
+  // const forthRef = useRef<FormInstance>();
+  // const billRef = useRef<any>();
 
   const onFinish = async (value: any) => {
     const data: API.CreateOrderParams = {
@@ -140,21 +140,21 @@ const Steps: React.FC<{
           name="startTime"
           rules={[
             { required: true, message: '请选择起保日期' },
-            () => ({
-              validator(_, value) {
-                if (
-                  moment()
-                    .add(13 * 30, 'minute')
-                    .isAfter(value.startOf('day').format())
-                ) {
-                  return Promise.reject(
-                    new Error(`现在无法创建起保时间为${value.format('YYYY-MM-DD')}的订单`),
-                  );
-                }
+            // () => ({
+            //   validator(_, value) {
+            //     if (
+            //       moment()
+            //         .add(13 * 30, 'minute')
+            //         .isAfter(value.startOf('day').format())
+            //     ) {
+            //       return Promise.reject(
+            //         new Error(`现在无法创建起保时间为${value.format('YYYY-MM-DD')}的订单`),
+            //       );
+            //     }
 
-                return Promise.resolve();
-              },
-            }),
+            //     return Promise.resolve();
+            //   },
+            // }),
           ]}
         />
 
@@ -524,7 +524,7 @@ const Steps: React.FC<{
         )}
       </StepsForm.StepForm>
 
-      <StepsForm.StepForm
+      {/* <StepsForm.StepForm
         title="上传发票信息"
         formRef={forthRef}
         initialValues={{
@@ -569,12 +569,12 @@ const Steps: React.FC<{
           />
         ) : (
           <>
-            {/* <UploadAliyunOSS
+            <UploadAliyunOSS
               ref={billRef}
               namespace="otherFile"
               ocrCallback={async () => {}}
               onRemove={() => {}}
-            /> */}
+            />
 
             <ProFormText
               name="billName"
@@ -631,7 +631,7 @@ const Steps: React.FC<{
             />
           </>
         )}
-      </StepsForm.StepForm>
+      </StepsForm.StepForm> */}
 
       <StepsForm.StepForm title="上传其他材料">
         <UploadAliyunOSS

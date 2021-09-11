@@ -191,6 +191,20 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.OrderListItem>[] = [
     {
+      title: '创建时间',
+      dataIndex: 'startTime',
+      valueType: 'date',
+      hideInTable: true,
+      search: {
+        transform: (value) => {
+          return {
+            startTime: value,
+            endTime: value,
+          };
+        },
+      },
+    },
+    {
       title: '序号',
       dataIndex: 'id',
       render: (_, record) => {
@@ -234,20 +248,6 @@ const TableList: React.FC = () => {
       title: '创建时间',
       dataIndex: 'createAt',
       search: false,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'startTime',
-      valueType: 'dateRange',
-      hideInTable: true,
-      search: {
-        transform: (value) => {
-          return {
-            startTime: value[0],
-            endTime: value[1],
-          };
-        },
-      },
     },
     {
       title: '查找方式',
@@ -352,9 +352,9 @@ const TableList: React.FC = () => {
           pageSize: 30,
         }}
         toolBarRender={() => [
-          <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
-            导出承保信息
-          </Button>,
+          // <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
+          //   导出承保信息
+          // </Button>,
         ]}
         request={async (params) => {
           const res = await order(params);
