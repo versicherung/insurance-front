@@ -36,6 +36,15 @@ export function certificateOcr(url: string) {
   });
 }
 
+export function billOcr(url: string) {
+  return request<API.BillOcrResult>('/api/ocr/bill', {
+    method: 'POST',
+    data: {
+      imgUrl: url,
+    },
+  });
+}
+
 export function otherFile(url: string) {
   return request<API.OtherFileResult>('/api/ocr/otherFile', {
     method: 'POST',

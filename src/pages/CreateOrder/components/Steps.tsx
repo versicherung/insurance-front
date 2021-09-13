@@ -4,7 +4,14 @@ import { StepsForm, ProFormSelect, ProFormDatePicker, ProFormText } from '@ant-d
 import moment from 'moment';
 
 import type { FormInstance } from 'antd';
-import { businessOcr, certificateOcr, drivingOcr, idCardOcr, otherFile } from '@/services/ocr';
+import {
+  billOcr,
+  businessOcr,
+  certificateOcr,
+  drivingOcr,
+  idCardOcr,
+  otherFile,
+} from '@/services/ocr';
 import { createOrder } from '@/services/api';
 import UploadAliyunOSS from './UploadAliyunOSS';
 
@@ -53,9 +60,10 @@ const Steps: React.FC<{
   const certificateRef = useRef<any>();
   const [isThirdAfterOcr, setIsThirdAfterOcr] = useState(false);
 
-  // const [isPerson, setIsPerson] = useState(true);
-  // const forthRef = useRef<FormInstance>();
-  // const billRef = useRef<any>();
+  const [isPerson, setIsPerson] = useState('none');
+  const forthRef = useRef<FormInstance>();
+  const billRef = useRef<any>();
+  const [billUrl, setBillUrl] = useState('');
 
   const onFinish = async (value: any) => {
     const data: API.CreateOrderParams = {
@@ -95,6 +103,29 @@ const Steps: React.FC<{
         type: value.vehicleType,
         frame: value.frame,
         engine: value.engine,
+      };
+    }
+
+    if (value.billType === 'person') {
+      data.bill = {
+        type: 1,
+        phoneNumber: value.billPhoneNumber,
+        address: value.billAddress,
+      };
+    } else if (value.billType === 'company') {
+      if (billUrl === '') {
+        message.error('请添加专票图片');
+        return false;
+      }
+      data.bill = {
+        type: 2,
+        phoneNumber: value.billPhoneNumber,
+        address: value.billAddress,
+        url: billUrl,
+        number: value.billNumber,
+        bankName: value.billBank,
+        account: value.billBankNumber,
+        name: value.billName,
       };
     }
 
@@ -138,24 +169,7 @@ const Steps: React.FC<{
           label="起保日期"
           width="md"
           name="startTime"
-          rules={[
-            { required: true, message: '请选择起保日期' },
-            // () => ({
-            //   validator(_, value) {
-            //     if (
-            //       moment()
-            //         .add(13 * 30, 'minute')
-            //         .isAfter(value.startOf('day').format())
-            //     ) {
-            //       return Promise.reject(
-            //         new Error(`现在无法创建起保时间为${value.format('YYYY-MM-DD')}的订单`),
-            //       );
-            //     }
-
-            //     return Promise.resolve();
-            //   },
-            // }),
-          ]}
+          rules={[{ required: true, message: '请选择起保日期' }]}
         />
 
         <ProFormSelect
@@ -524,27 +538,32 @@ const Steps: React.FC<{
         )}
       </StepsForm.StepForm>
 
-      {/* <StepsForm.StepForm
+      <StepsForm.StepForm
         title="上传发票信息"
         formRef={forthRef}
         initialValues={{
-          billType: 'person',
+          billType: 'none',
         }}
         onValuesChange={({ billType }) => {
           if (billType) {
             if (billType === 'person') {
               forthRef.current?.setFieldsValue({
-                phoneNumber: '',
+                billPhoneNumber: '',
+                billAddress: '',
               });
             } else {
               forthRef.current?.setFieldsValue({
-                address: '',
+                billName: '',
+                billNumber: '',
+                billAddress: '',
+                billPhoneNumber: '',
+                billBank: '',
+                billBankNumber: '',
               });
+              billRef.current?.setFileList([]);
             }
 
-            billRef.current?.setFileList([]);
-
-            setIsPerson(billType === 'person');
+            setIsPerson(billType);
           }
         }}
       >
@@ -556,24 +575,65 @@ const Steps: React.FC<{
           valueEnum={{
             person: '普票',
             company: '专票',
+            none: '无',
           }}
         />
 
-        {isPerson ? (
-          <ProFormText
-            name="phoneNumber"
-            label="电话号码"
-            width="md"
-            placeholder="请输入电话号码"
-            rules={[{ required: true }]}
-          />
-        ) : (
+        {isPerson === 'person' && (
+          <>
+            <ProFormText
+              name="billPhoneNumber"
+              label="电话号码"
+              width="md"
+              placeholder="请输入电话号码"
+              rules={[{ required: true }]}
+            />
+            <ProFormText
+              name="billAddress"
+              label="单位地址"
+              width="md"
+              placeholder="请输入单位地址"
+              rules={[{ required: true }]}
+            />
+          </>
+        )}
+
+        {isPerson === 'company' && (
           <>
             <UploadAliyunOSS
               ref={billRef}
               namespace="otherFile"
-              ocrCallback={async () => {}}
-              onRemove={() => {}}
+              ocrCallback={async (res) => {
+                setBillUrl(res.url);
+
+                handleOCR(
+                  async () => {
+                    const ocrRes = await billOcr(res.url);
+                    const { data } = ocrRes;
+                    forthRef.current?.setFieldsValue({
+                      billName: data?.name,
+                      billNumber: data?.number,
+                      billAddress: data?.address,
+                      billPhoneNumber: data?.phoneNumber,
+                      billBank: data?.bankName,
+                      billBankNumber: data?.bankAccount,
+                    });
+                  },
+                  () => {},
+                );
+              }}
+              onRemove={() => {
+                setBillUrl('');
+
+                forthRef.current?.setFieldsValue({
+                  billName: '',
+                  billNumber: '',
+                  billAddress: '',
+                  billPhoneNumber: '',
+                  billBank: '',
+                  billBankNumber: '',
+                });
+              }}
             />
 
             <ProFormText
@@ -607,6 +667,7 @@ const Steps: React.FC<{
               placeholder="请输入电话号码"
               rules={[{ required: true }]}
             />
+
             <ProFormText
               name="billBank"
               label="开户银行"
@@ -614,6 +675,7 @@ const Steps: React.FC<{
               placeholder="请输入开户银行"
               rules={[{ required: true }]}
             />
+
             <ProFormText
               name="billBankNumber"
               label="银行账号"
@@ -622,16 +684,16 @@ const Steps: React.FC<{
               rules={[{ required: true }]}
             />
 
-            <ProFormText
+            {/* <ProFormText
               name="postAddress"
               label="邮寄地址"
               width="md"
               placeholder="请输入邮寄地址"
               rules={[{ required: true }]}
-            />
+            /> */}
           </>
         )}
-      </StepsForm.StepForm> */}
+      </StepsForm.StepForm>
 
       <StepsForm.StepForm title="上传其他材料">
         <UploadAliyunOSS

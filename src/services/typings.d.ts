@@ -112,6 +112,16 @@ declare namespace API {
       engine: string;
       frame: string;
     };
+    bill?: {
+      type: number;
+      url?: string;
+      address: string;
+      phoneNumber: string;
+      number?: string;
+      bankName?: string;
+      account?: string;
+      name?: string;
+    };
   };
 
   type UserListParams = {
@@ -196,6 +206,15 @@ declare namespace API {
     carType: string;
     engine: string;
     frame: string;
+  }>;
+
+  type BillOcrResult = Result<{
+    name: string;
+    number: string;
+    address: string;
+    phoneNumber: string;
+    bankName: string;
+    bankAccount: string;
   }>;
 
   type OtherFileResult = Result<{
