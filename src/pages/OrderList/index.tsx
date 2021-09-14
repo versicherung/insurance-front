@@ -353,9 +353,9 @@ const TableList: React.FC = () => {
           pageSizeOptions: ['20', '30', '50'],
         }}
         toolBarRender={() => [
-          // <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
-          //   导出承保信息
-          // </Button>,
+          <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
+            导出承保信息
+          </Button>,
         ]}
         request={async (params) => {
           const res = await order(params);
