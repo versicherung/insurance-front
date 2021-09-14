@@ -44,8 +44,8 @@ const handleExportExcel = async (
   if (formRef.current) {
     const fields = formRef.current.getFieldsValue();
     if (fields.startTime) {
-      params.startTime = fields.startTime[0].format('YYYY-MM-DD');
-      params.endTime = fields.startTime[1].format('YYYY-MM-DD');
+      params.startTime = fields.startTime.format('YYYY-MM-DD');
+      params.endTime = fields.startTime.format('YYYY-MM-DD');
     }
   }
   if (id) {
