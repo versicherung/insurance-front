@@ -1,6 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
-
 declare namespace API {
   interface Result<T> {
     code?: number;
@@ -37,6 +34,7 @@ declare namespace API {
     policy?: string;
     startTime: string;
     username?: string;
+    createAt: string;
   };
 
   type OrderList = Result<{ total: number; items: OrderListItem[] }>;
@@ -70,6 +68,7 @@ declare namespace API {
 
     certificate?: {
       url: string;
+      type: string;
       frame: string;
       engine: string;
     };
@@ -87,6 +86,7 @@ declare namespace API {
     startTime: string;
     paymentId: number;
     carTypeId: number;
+    otherFileId: number[];
     idCard?: {
       id: number;
       name: string;
@@ -108,8 +108,19 @@ declare namespace API {
     };
     certificate?: {
       id: number;
+      type: string;
       engine: string;
       frame: string;
+    };
+    bill?: {
+      type: number;
+      url?: string;
+      address: string;
+      phoneNumber: string;
+      number?: string;
+      bankName?: string;
+      account?: string;
+      name?: string;
     };
   };
 
@@ -166,5 +177,47 @@ declare namespace API {
   type PolicyListResult = Result<{
     total: number;
     items: PolicyListItem[];
+  }>;
+
+  type IdCardOcrResult = Result<{
+    id: number;
+    address: string;
+    number: string;
+    name: string;
+  }>;
+
+  type BusinessOcrResult = Result<{
+    id: number;
+    address: string;
+    number: string;
+    name: string;
+  }>;
+
+  type DrivingOcrResult = Result<{
+    id: number;
+    plate: string;
+    engine: string;
+    frame: string;
+    type: string;
+  }>;
+
+  type CertificateOcrResult = Result<{
+    id: number;
+    carType: string;
+    engine: string;
+    frame: string;
+  }>;
+
+  type BillOcrResult = Result<{
+    name: string;
+    number: string;
+    address: string;
+    phoneNumber: string;
+    bankName: string;
+    bankAccount: string;
+  }>;
+
+  type OtherFileResult = Result<{
+    id: number;
   }>;
 }

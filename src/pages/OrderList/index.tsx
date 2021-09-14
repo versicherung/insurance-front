@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useRequest, useModel } from 'umi';
-import { Button, Dropdown, Menu, message } from 'antd';
+import { Button, Dropdown, Menu, message, Popconfirm } from 'antd';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { EllipsisOutlined } from '@ant-design/icons';
@@ -15,9 +15,23 @@ import {
   exportPolicy,
   orderDetail,
   exportOverPolicy,
+  deleteOrder,
 } from '@/services/api';
 
 import DetailDraw from './components/DetailDraw';
+
+const handleDeleteOrder = async (id: number) => {
+  const params: { id: number } = { id };
+  const hide = message.loading('正在删除', 0);
+
+  try {
+    await deleteOrder(params);
+    hide();
+  } catch (e) {
+    hide();
+    message.error('删除订单失败，请稍后重试');
+  }
+};
 
 const handleExportExcel = async (
   formRef: React.MutableRefObject<ProFormInstance | undefined>,
@@ -177,6 +191,27 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.OrderListItem>[] = [
     {
+      title: '创建时间',
+      dataIndex: 'startTime',
+      valueType: 'date',
+      hideInTable: true,
+      search: {
+        transform: (value) => {
+          return {
+            startTime: value,
+            endTime: value,
+          };
+        },
+      },
+    },
+    {
+      title: '序号',
+      dataIndex: 'id',
+      render: (_, record) => {
+        return `PICC-CP-${record.id.toString().padStart(6, '0')}`;
+      },
+    },
+    {
       title: '车主',
       dataIndex: 'owner',
       hideInSearch: true,
@@ -184,7 +219,6 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              // setCurrentRow(entity);
               run({ id: record.id });
               setShowDetail(true);
             }}
@@ -197,33 +231,43 @@ const TableList: React.FC = () => {
     {
       title: '车牌号',
       dataIndex: 'licensePlate',
-      hideInSearch: true,
     },
     {
       title: '起保时间',
       dataIndex: 'startTime',
       valueType: 'date',
-      hideInSearch: true,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'startTime',
-      valueType: 'dateRange',
-      hideInTable: true,
-      search: {
-        transform: (value) => {
-          return {
-            startTime: value[0],
-            endTime: value[1],
-          };
-        },
-      },
+      search: false,
     },
     {
       title: '创建人',
       dataIndex: 'username',
-      hideInTable: initialState?.currentUser?.role === 4,
+      hideInTable: initialState?.currentUser?.role === 8 || initialState?.currentUser?.role === 4,
       search: false,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createAt',
+      search: false,
+    },
+    {
+      title: '查找方式',
+      dataIndex: 'accurate',
+      valueType: 'radio',
+      width: 100,
+      hideInTable: true,
+      initialValue: 'vague',
+      valueEnum: {
+        vague: { text: '模糊查找' },
+        accurate: { text: '精确查找' },
+      },
+      search: {
+        transform: (value) => {
+          if (value === 'accurate') {
+            return { accurate: true };
+          }
+          return { accurate: false };
+        },
+      },
     },
     {
       title: '车型',
@@ -239,6 +283,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <a
           key="downloadFile"
@@ -248,6 +293,29 @@ const TableList: React.FC = () => {
         >
           下载证明材料
         </a>,
+        initialState?.currentUser?.role !== 4 ? (
+          <Popconfirm
+            title="请确认删除！"
+            onConfirm={async () => {
+              await handleDeleteOrder(record.id);
+              actionRef.current?.reload();
+            }}
+            okText="是"
+            cancelText="否"
+          >
+            <a
+              key="deleteItem"
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+              style={{
+                color: 'red',
+              }}
+            >
+              删除
+            </a>
+          </Popconfirm>
+        ) : null,
         <Dropdown
           overlay={
             <DropDownMenu
@@ -273,23 +341,18 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.OrderListItem, API.PageParams>
-        headerTitle={'顶单列表'}
+        headerTitle={'订单列表'}
         actionRef={actionRef}
         formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
+        pagination={{
+          defaultPageSize: 30,
+          pageSizeOptions: ['20', '30', '50'],
+        }}
         toolBarRender={() => [
-          // <Button
-          //   type="primary"
-          //   key="primary"
-          //   onClick={() => {
-          //     history.push('/order/create');
-          //   }}
-          // >
-          //   <PlusOutlined /> 新建
-          // </Button>,
           <Button key="out" type="primary" onClick={() => handleExportExcel(formRef)}>
             导出承保信息
           </Button>,

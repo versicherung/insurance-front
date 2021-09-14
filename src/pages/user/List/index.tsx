@@ -72,6 +72,11 @@ const UserList: React.FC = () => {
       dataIndex: 'username',
     },
     {
+      title: '昵称',
+      dataIndex: 'nickname',
+      search: false,
+    },
+    {
       title: '用户角色',
       dataIndex: 'role',
       hideInSearch: true,
@@ -162,6 +167,7 @@ const UserList: React.FC = () => {
           };
         }}
       />
+
       <ModalForm
         title="新建用户"
         width="400px"
@@ -189,6 +195,28 @@ const UserList: React.FC = () => {
             {
               required: true,
               message: '请输入用户名',
+            },
+            () => ({
+              validator: (_, value) => {
+                if (/^[a-zA-Z0-9]*$/.test(value)) {
+                  return Promise.resolve();
+                }
+
+                return Promise.reject(new Error('用户名仅可包含大小写字母与数字'));
+              },
+            }),
+          ]}
+        />
+        <ProFormText
+          label="昵称"
+          width="md"
+          name="nickname"
+          hasFeedback
+          placeholder="请输入昵称"
+          rules={[
+            {
+              required: true,
+              message: '请输入昵称',
             },
           ]}
         />
@@ -265,6 +293,7 @@ const UserList: React.FC = () => {
           }
         }}
       >
+        <ProFormText label="昵称" width="md" name="nickname" hasFeedback placeholder="请输入昵称" />
         <ProFormText.Password
           label="密码"
           width="md"

@@ -148,6 +148,11 @@ const DetailDraw: React.FC<{
                 </Col>
               </Row>
               <Row>
+                <Col span={12}>
+                  <DescriptionItem title="车辆类型" content={detailData.certificate.type} />
+                </Col>
+              </Row>
+              <Row>
                 <Col span={24}>
                   <DescriptionItem
                     title="照片"

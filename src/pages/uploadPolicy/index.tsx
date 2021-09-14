@@ -41,7 +41,19 @@ const UploadPolicy: React.FC = () => {
           status: 'Success',
         },
         5: {
-          text: '操作失败，请手动重试',
+          text: '生成出保单失败',
+          status: 'Error',
+        },
+        6: {
+          text: '没有成功匹配到订单，请先创建订单后重试',
+          status: 'Error',
+        },
+        7: {
+          text: '文件读取或输出失败',
+          status: 'Error',
+        },
+        8: {
+          text: '未知错误',
           status: 'Error',
         },
       },
