@@ -110,7 +110,7 @@ const Steps: React.FC<{
       data.bill = {
         type: 1,
         phoneNumber: value.billPhoneNumber,
-        address: value.billAddress,
+        // address: value.billAddress,
       };
     } else if (value.billType === 'company') {
       if (billUrl === '') {
@@ -588,13 +588,13 @@ const Steps: React.FC<{
               placeholder="请输入电话号码"
               rules={[{ required: true }]}
             />
-            <ProFormText
+            {/* <ProFormText
               name="billAddress"
               label="单位地址"
               width="md"
               placeholder="请输入单位地址"
               rules={[{ required: true }]}
-            />
+            /> */}
           </>
         )}
 

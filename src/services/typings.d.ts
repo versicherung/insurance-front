@@ -115,7 +115,7 @@ declare namespace API {
     bill?: {
       type: number;
       url?: string;
-      address: string;
+      address?: string;
       phoneNumber: string;
       number?: string;
       bankName?: string;
